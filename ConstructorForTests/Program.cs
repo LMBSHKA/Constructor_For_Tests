@@ -1,4 +1,5 @@
 using ConstructorForTests.Database;
+using ConstructorForTests.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -12,10 +13,10 @@ internal class Program
 		var builder = WebApplication.CreateBuilder(args);
 
 		// Add services to the container.
+		builder.Services.AddScoped<IAuthenticationRepo, AuthenticationRepo>();
 
-		//Create localStorageDb
+		//Create local storage Db
 		builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMemoryDb"));
-
 		builder.Services.AddDistributedMemoryCache();
 
 		//Add Sesion options
@@ -45,7 +46,7 @@ internal class Program
 
 		PrepDb.PrepPopulation(app);
 
-		app.UseRouting();
+		//app.UseRouting();
 
 		app.UseSession();
 
