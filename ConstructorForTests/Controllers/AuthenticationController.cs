@@ -1,9 +1,8 @@
 ﻿using ConstructorForTests.Database;
 using ConstructorForTests.Dtos;
+using ConstructorForTests.Filters;
 using ConstructorForTests.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace ConstructorForTests.Controllers
 {
@@ -23,7 +22,9 @@ namespace ConstructorForTests.Controllers
 		[HttpPost("LogIn")]
 		public IActionResult LogIn([FromBody] AuthenticationDto userAccessData)
 		{
-			return _authenticationRepo.LogIn(userAccessData.Email, userAccessData.Password, HttpContext.Session).Result ? Ok() : Unauthorized();
+			return _authenticationRepo
+				.LogIn(userAccessData.Email, userAccessData.Password, HttpContext.Session)
+				.Result ? Ok() : Unauthorized();
 		}
 
 		[HttpPost("LogOut")]
@@ -34,19 +35,10 @@ namespace ConstructorForTests.Controllers
 			return Ok();
 		}
 
+		[SessionAuthentication]
 		[HttpGet("TestAuth")]
-		public async Task<IActionResult> Test()
+		public IActionResult Test()
 		{
-			var userId = HttpContext.Session.GetString("UserId");
-
-			if (userId == null)
-				return Unauthorized();
-
-			var user = await _context.Curators.FindAsync(new Guid(userId));
-
-			if (user == null)
-				return Unauthorized();
-
 			return Ok();
 		}
 	}

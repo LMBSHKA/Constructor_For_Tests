@@ -1,5 +1,4 @@
 ﻿using ConstructorForTests.Database;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConstructorForTests.Repositories
@@ -22,7 +21,7 @@ namespace ConstructorForTests.Repositories
 				return false;
 			}
 
-			session.SetString("UserId", user.Id.ToString());
+			session.SetString("CuratorId", user.Id.ToString());
 			session.SetString("Email", email);
 
 			return true;

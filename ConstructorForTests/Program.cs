@@ -1,4 +1,5 @@
 using ConstructorForTests.Database;
+using ConstructorForTests.Filters;
 using ConstructorForTests.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,7 @@ internal class Program
 		});
 
 		builder.Services.AddControllers();
+
 		// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerGen();
