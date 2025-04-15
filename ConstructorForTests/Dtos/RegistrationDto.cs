@@ -2,7 +2,7 @@
 
 namespace ConstructorForTests.Dtos
 {
-	public class AuthenticationDto
+	public class RegistrationDto
 	{
 		[Required]
 		public string Email { get; set; }
