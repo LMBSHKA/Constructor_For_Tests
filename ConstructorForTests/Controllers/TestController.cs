@@ -16,13 +16,13 @@ namespace ConstructorForTests.Controllers
 			_testRepo = testRepo;
 		}
 
-		[HttpGet]
+		[HttpGet("GetAllTests")]
 		public IActionResult GetAllTests()
 		{
 			return Ok(_testRepo.GetAllTests().Result);
 		}
 
-		[HttpGet("{id}")]
+		[HttpGet("GetTest/{id}")]
 		public IActionResult GetTestById(Guid id)
 		{
 			var test = _testRepo.GetTestById(id).Result;
@@ -33,8 +33,8 @@ namespace ConstructorForTests.Controllers
 			return Ok(test);
 		}
 
-		[HttpPost]
-		public IActionResult CreateTest([FromBody] Test createTestData)
+		[HttpPost("CreateTest")]
+		public IActionResult CreateTest([FromBody] GetOrCreateTestDto createTestData)
 		{
 			if (_testRepo.CreateTest(createTestData).Result)
 				return Ok();
@@ -42,7 +42,7 @@ namespace ConstructorForTests.Controllers
 			return BadRequest("Something went wrong");
 		}
 
-		[HttpPut("{id}")]
+		[HttpPut("Update/{id}")]
 		public IActionResult UpdateTest(Guid id, [FromBody] Test updateTestData)
 		{
 			if (_testRepo.UpdateTest(id, updateTestData).Result)
@@ -51,4 +51,5 @@ namespace ConstructorForTests.Controllers
 			return BadRequest("Something went wrong");
 		}
 	}
+
 }

@@ -7,6 +7,7 @@ namespace ConstructorForTests.Database
 	{
 		public DbSet<Curator> Curators { get; set; }
 		public DbSet<Test> Tests { get; set; }
+		public DbSet<Question> Questions { get; set; }
 
 		public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 	}

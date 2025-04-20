@@ -34,6 +34,22 @@
 
 				context.SaveChanges();
 			}
+
+			if (!context.Questions.Any())
+			{
+				context.Questions.AddRange(
+					new Models.Question
+					{
+						Id = new Guid(),
+						QuestionText = "test text",
+						Mark = 10,
+						Order = 1,
+						TestId = new Guid(),
+						Type = Models.QuestionType.MultiplyAnswer
+					});
+				context.SaveChanges();
+
+			}
 		}
 	}
 }

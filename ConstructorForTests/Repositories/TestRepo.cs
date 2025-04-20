@@ -2,6 +2,7 @@
 using ConstructorForTests.Dtos;
 using ConstructorForTests.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace ConstructorForTests.Repositories
 {
@@ -18,26 +19,41 @@ namespace ConstructorForTests.Repositories
 			return await _context.Tests.ToListAsync();
 		}
 
-		public async Task<Test?> GetTestById(Guid id)
+		public async Task<GetOrCreateTestDto?> GetTestById(Guid id)
 		{
 			if (id == Guid.Empty)
 				return null;
 
-			return await _context.Tests.FirstOrDefaultAsync(t => t.Id == id);
+			var test = await _context.Tests.FirstOrDefaultAsync(t => t.Id == id);
+
+			if (test == null)
+				return null;
+
+			var questions = await _context.Questions.Where(x => x.TestId == id).ToListAsync();
+
+			return new GetOrCreateTestDto(test, questions);
 		}
 
-		public async Task<bool> CreateTest(Test createTestData)
+		public async Task<bool> CreateTest(GetOrCreateTestDto createTestData)
 		{
 			try
 			{
 				if (createTestData.Title == "null")
 					return false;
 
-				createTestData.IsActive = true;
-				createTestData.ManualCheck = true;
+				var newTest = new Test(
+					createTestData.Title,
+					createTestData.StartAt,
+					createTestData.EndAt,
+					true,
+					createTestData.ScoreToPass,
+					false
+					);
 
-				await _context.AddAsync(createTestData);
+				await _context.Tests.AddAsync(newTest);
+				var testId = newTest.Id;
 				await _context.SaveChangesAsync();
+				AddQuestion(testId, createTestData.Questions);
 
 				return true;
 			}
@@ -45,6 +61,16 @@ namespace ConstructorForTests.Repositories
 			catch
 			{
 				return false;
+			}
+		}
+
+		private async void AddQuestion(Guid testId, List<Question> questions)
+		{
+			foreach (var question in questions)
+			{
+				question.TestId = testId;
+				await _context.Questions.AddAsync(question);
+				await _context.SaveChangesAsync();
 			}
 		}
 
