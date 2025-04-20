@@ -5,19 +5,19 @@ namespace ConstructorForTests.Models
 	public class Test
 	{
 		[Key]
-		public Guid Id { get; set; }
+		public Guid Id { get; set; } = Guid.Empty;
 		[Required]
-		public string? Title { get; set; }
+		public string Title { get; set; } = "null";
 		[Required]
-		public DateTime StartAt { get; set; }
+		public DateTime StartAt { get; set; } = DateTime.MinValue;
 		[Required]
-		public DateTime EndAt { get; set; }
+		public DateTime EndAt { get; set; } = DateTime.MinValue;
 		[Required]
-		public bool IsActive {  get; set; }
+		public bool IsActive { get; set; } = false;
 		[Required]
-		public decimal ScoreToPass { get; set; }
+		public decimal ScoreToPass { get; set; } = decimal.Zero;
 		[Required]
-		public bool ManualCheck { get; set; }
+		public bool ManualCheck { get; set; } = false;
 
 		public Test() { }
 

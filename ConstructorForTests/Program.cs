@@ -15,6 +15,7 @@ internal class Program
 
 		// Add services to the container.
 		builder.Services.AddScoped<IAuthenticationRepo, AuthenticationRepo>();
+		builder.Services.AddScoped<ITestRepo, TestRepo>();
 
 		//Create local storage Db
 		builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMemoryDb"));
