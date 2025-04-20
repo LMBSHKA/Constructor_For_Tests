@@ -24,6 +24,15 @@
 
 				context.SaveChanges();
 			}
+
+			if (!context.Tests.Any())
+			{
+				context.Tests.AddRange(
+					new Models.Test("test", DateTime.Now, DateTime.Now, true, 10, false)
+					);
+
+				context.SaveChanges();
+			}
 		}
 	}
 }
