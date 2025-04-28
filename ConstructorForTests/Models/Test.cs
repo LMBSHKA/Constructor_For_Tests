@@ -9,9 +9,9 @@ namespace ConstructorForTests.Models
 		[Required]
 		public string Title { get; set; } = "null";
 		[Required]
-		public DateTime StartAt { get; set; } = DateTime.MinValue;
+		public string StartAt { get; set; } = String.Empty;
 		[Required]
-		public DateTime EndAt { get; set; } = DateTime.MinValue;
+		public string EndAt { get; set; } = String.Empty;
 		[Required]
 		public bool IsActive { get; set; } = false;
 		[Required]
@@ -21,7 +21,7 @@ namespace ConstructorForTests.Models
 
 		public Test() { }
 
-		public Test(string title, DateTime startAt, DateTime endAt,
+		public Test(string title, string startAt, string endAt,
 			bool isActive, decimal scoreToPass, bool manualCheck)
 		{
 			Title = title;

@@ -43,8 +43,8 @@ namespace ConstructorForTests.Repositories
 
 				var newTest = new Test(
 					createTestData.Title,
-					createTestData.StartAt,
-					createTestData.EndAt,
+					createTestData.StartAt.ToString("dd.MM.yyyy"),
+					createTestData.EndAt.ToString("dd.MM.yyyy"),
 					true,
 					createTestData.ScoreToPass,
 					false

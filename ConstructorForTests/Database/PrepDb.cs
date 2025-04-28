@@ -28,8 +28,8 @@
 			if (!context.Tests.Any())
 			{
 				context.Tests.AddRange(
-					new Models.Test("test", DateTime.Now, DateTime.Now, true, 10, false),
-					new Models.Test("test2", DateTime.Now, DateTime.Now, false, 30, true)
+					new Models.Test("test", DateTime.Now.ToString("dd.MM.yyyy"), DateTime.Now.ToString("dd.MM.yyyy"), true, 10, false),
+					new Models.Test("test2", DateTime.Now.ToString("dd.MM.yyyy"), DateTime.Now.ToString("dd.MM.yyyy"), false, 30, true)
 					);
 
 				context.SaveChanges();
