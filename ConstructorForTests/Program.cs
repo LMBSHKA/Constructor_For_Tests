@@ -17,8 +17,11 @@ internal class Program
 		builder.Services.AddScoped<IAuthenticationRepo, AuthenticationRepo>();
 		builder.Services.AddScoped<ITestRepo, TestRepo>();
 
-		//Create local storage Db
-		builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMemoryDb"));
+		//Connect Db
+		builder.Services.AddDbContext<AppDbContext>(opt =>
+		{
+			opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+		});
 		builder.Services.AddDistributedMemoryCache();
 
 		//Add Sesion options
@@ -46,8 +49,6 @@ internal class Program
 			app.UseSwagger();
 			app.UseSwaggerUI();
 		}
-
-		PrepDb.PrepPopulation(app);
 
 		//app.UseRouting();
 

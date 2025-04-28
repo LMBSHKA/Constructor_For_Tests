@@ -53,7 +53,7 @@ namespace ConstructorForTests.Repositories
 				await _context.Tests.AddAsync(newTest);
 				var testId = newTest.Id;
 				await _context.SaveChangesAsync();
-				AddQuestion(testId, createTestData.Questions);
+				await AddQuestion(testId, createTestData.Questions);
 
 				return true;
 			}
@@ -64,7 +64,7 @@ namespace ConstructorForTests.Repositories
 			}
 		}
 
-		private async void AddQuestion(Guid testId, List<Question> questions)
+		private async Task AddQuestion(Guid testId, List<Question> questions)
 		{
 			foreach (var question in questions)
 			{
