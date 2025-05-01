@@ -34,8 +34,9 @@ namespace ConstructorForTests.Controllers
 		}
 
 		[HttpPost("CreateTest")]
-		public IActionResult CreateTest([FromBody] GetOrCreateTestDto createTestData)
+		public IActionResult CreateTest([FromBody] CreateTestDto createTestData)
 		{
+			
 			if (_testRepo.CreateTest(createTestData).Result)
 				return Ok();
 

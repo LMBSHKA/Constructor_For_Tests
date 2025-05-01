@@ -19,7 +19,7 @@ namespace ConstructorForTests.Repositories
 			return await _context.Tests.ToListAsync();
 		}
 
-		public async Task<GetOrCreateTestDto?> GetTestById(Guid id)
+		public async Task<GetTestDTO?> GetTestById(Guid id)
 		{
 			if (id == Guid.Empty)
 				return null;
@@ -29,12 +29,14 @@ namespace ConstructorForTests.Repositories
 			if (test == null)
 				return null;
 
-			var questions = await _context.Questions.Where(x => x.TestId == id).ToListAsync();
+			var questions = await _context.Questions
+				.Where(x => x.TestId == id)
+				.ToListAsync();
 
-			return new GetOrCreateTestDto(test, questions);
+			return new GetTestDTO(test, questions);
 		}
 
-		public async Task<bool> CreateTest(GetOrCreateTestDto createTestData)
+		public async Task<bool> CreateTest(CreateTestDto createTestData)
 		{
 			try
 			{

@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace ConstructorForTests.Dtos
 {
-	public class GetOrCreateTestDto
+	public class CreateTestDto
 	{
 		public string Title { get; set; } = "null";
 		public DateTime StartAt { get; set; } = DateTime.MinValue;
@@ -14,8 +14,8 @@ namespace ConstructorForTests.Dtos
 		public bool ManualCheck { get; set; } = false;
 		public List<Question>? Questions { get; set; }
 
-		public GetOrCreateTestDto() { }
-		public GetOrCreateTestDto(Test test, List<Question> questions)
+		public CreateTestDto() { }
+		public CreateTestDto(Test test, List<Question> questions)
 		{
 			Title = test.Title;
 			StartAt = DateTime.ParseExact(test.StartAt, "dd.MM.yyyy", CultureInfo.InvariantCulture);
