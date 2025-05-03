@@ -5,6 +5,8 @@ namespace ConstructorForTests.Dtos
 {
 	public class GetTestDTO : CreateTestDto
 	{
+		public List<Question> Questions { get; set; }
+
 		public GetTestDTO() { }
 
 		public GetTestDTO(Test test, List<Question> questions)

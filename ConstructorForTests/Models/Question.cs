@@ -15,6 +15,17 @@ namespace ConstructorForTests.Models
 		public decimal Mark { get; set; }
 		[Required]
 		public int Order { get; set; }
+
+		public Question() { }
+
+		public Question(Guid testId, string questionText, QuestionType questionType, decimal mark, int order)
+		{
+			TestId = testId;
+			QuestionText = questionText;
+			Type = questionType;
+			Mark = mark;
+			Order = order;
+		}
 	}
 
 	public enum QuestionType
