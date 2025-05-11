@@ -11,6 +11,10 @@ namespace ConstructorForTests.Database
 		public DbSet<Answer> Answers { get; set; }
 		public DbSet<MultipleChoice> MultipleChoices { get; set; }
 		public DbSet<MatchingPair> MatchingPairs { get; set; }
+		public DbSet<User> Users { get; set; }
+		public DbSet<UserAnswer> UserAnswers { get; set; }
+		public DbSet<MultipleChoice> UserMultipleChoices { get; set; }
+		public DbSet<MatchingPair> UserMatchingPairs { get; set; }
 
 		public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 	}

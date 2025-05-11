@@ -7,11 +7,11 @@ namespace ConstructorForTests.Controllers
 {
 	[ApiController]
 	[Route("api/v1/operationsOnTest")]
-	public class TestController : ControllerBase
+	public class CreateTestController : ControllerBase
 	{
 		private readonly ITestRepo _testRepo;
 
-		public TestController(ITestRepo testRepo)
+		public CreateTestController(ITestRepo testRepo)
 		{
 			_testRepo = testRepo;
 		}

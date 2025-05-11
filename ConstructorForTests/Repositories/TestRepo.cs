@@ -2,7 +2,6 @@
 using ConstructorForTests.Dtos;
 using ConstructorForTests.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace ConstructorForTests.Repositories
 {
@@ -75,15 +74,15 @@ namespace ConstructorForTests.Repositories
 				var questionId = newQuestion.Id;
 				await _context.SaveChangesAsync();
 
-				await AddAnswer(questionId, question.CreateAnswer);
+				await AddAnswer(questionId, question.CreateAnswer, testId);
 			}
 		}
 		
-		private async Task AddAnswer(Guid questionId, CreateAnswerDTO answer)
+		private async Task AddAnswer(Guid questionId, AnswerDTO answer, Guid testId)
 		{
 			if (!string.IsNullOrEmpty(answer.TextAnswer)) 
 			{
-				var newAnswer = new Answer(questionId, Guid.Empty, Guid.Empty, answer.TextAnswer);
+				var newAnswer = new Answer(questionId, Guid.Empty, Guid.Empty, answer.TextAnswer, testId);
 				await _context.Answers.AddAsync(newAnswer);
 				var guid = newAnswer.Id;
 				await _context.SaveChangesAsync();
@@ -94,19 +93,19 @@ namespace ConstructorForTests.Repositories
 
 			if (answer.MultipleAnswer.Count > 0)
 			{
-				await AddMultipleAnswer(answer.MultipleAnswer);
+				await AddMultipleAnswer(answer.MultipleAnswer, testId, questionId);
 			}
 
 			if (answer.MatchingPairs.Count > 0)
 			{
-				await AddPairAnswer(answer.MatchingPairs);
+				await AddPairAnswer(answer.MatchingPairs, testId, questionId);
 			}
 		}
 
-		private async Task AddMultipleAnswer(List<string> multipleAnswers)
+		private async Task AddMultipleAnswer(List<string> multipleAnswers, Guid testId, Guid questionId)
 		{
 			var guid = Guid.NewGuid();
-			var newAnswer = new Answer(Guid.Empty, guid, Guid.Empty, string.Empty);
+			var newAnswer = new Answer(questionId, guid, Guid.Empty, string.Empty, testId);
 			await _context.Answers.AddAsync(newAnswer);
 			await _context.SaveChangesAsync();
 
@@ -119,10 +118,10 @@ namespace ConstructorForTests.Repositories
 			await _context.SaveChangesAsync();
 		}
 
-		private async Task AddPairAnswer(Dictionary<string, string> pairAnswers)
+		private async Task AddPairAnswer(Dictionary<string, string> pairAnswers, Guid testId, Guid questionId)
 		{
 			var guid = Guid.NewGuid();
-			var newAnswer = new Answer(Guid.Empty, Guid.Empty, guid, string.Empty);
+			var newAnswer = new Answer(questionId, Guid.Empty, guid, string.Empty, testId);
 			await _context.Answers.AddAsync(newAnswer);
 			await _context.SaveChangesAsync();
 

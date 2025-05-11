@@ -6,6 +6,7 @@ namespace ConstructorForTests.Models
 	{
 		[Key]
 		public Guid Id { get; set; }
+		public Guid TestId { get; set; }
 		public Guid QuestionId { get; set; }
 		public Guid MultipleAnswerId { get; set; }
 		public Guid PairId { get; set; }
@@ -13,8 +14,9 @@ namespace ConstructorForTests.Models
 
 		public Answer() { }
 
-		public Answer (Guid questionId, Guid multipleAnswerId, Guid pairId, string textAnswer)
+		public Answer (Guid questionId, Guid multipleAnswerId, Guid pairId, string textAnswer, Guid testId)
 		{
+			TestId = testId;
 			QuestionId = questionId;
 			MultipleAnswerId = multipleAnswerId;
 			PairId = pairId;

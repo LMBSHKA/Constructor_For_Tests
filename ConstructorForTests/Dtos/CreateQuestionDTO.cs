@@ -9,6 +9,6 @@ namespace ConstructorForTests.Dtos
 		public QuestionType Type { get; set; }
 		public decimal Mark { get; set; }
 		public int Order { get; set; }
-		public CreateAnswerDTO CreateAnswer { get; set; }
+		public AnswerDTO CreateAnswer { get; set; }
 	}
 }
