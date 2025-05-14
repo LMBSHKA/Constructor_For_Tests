@@ -15,10 +15,10 @@ namespace ConstructorForTests.Controllers
 			_userSolutionRepo = userSolutionRepo;
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> AcceptUserSolution(UserSolutionDto userSolution)
+		[HttpPost("{testId}")]
+		public async Task<IActionResult> AcceptUserSolution(List<UserAnswersDto> userSolution, Guid testId)
 		{
-			return Ok(await _userSolutionRepo.CheckUserAnswers(userSolution));
+			return Ok(await _userSolutionRepo.CheckUserAnswers(userSolution, testId));
 		}
 	}
 }

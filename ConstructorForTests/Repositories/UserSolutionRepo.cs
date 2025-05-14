@@ -14,20 +14,18 @@ namespace ConstructorForTests.Repositories
 			_context = context;
 		}
 
-		public async Task<decimal> CheckUserAnswers(UserSolutionDto userSolution)
+		public async Task<decimal> CheckUserAnswers(List<UserAnswersDto> userSolution, Guid testId)
 		{
 			decimal score = 0;
 			var correctAnswers = await _context.Answers
-				.Where(x => x.TestId == userSolution.TestId)
+				.Where(x => x.TestId == testId)
 				.ToListAsync();
 
 			var questions = await _context.Questions
-				.Where(x => x.TestId == userSolution.TestId)
+				.Where(x => x.TestId == testId)
 				.ToListAsync();
-
-			var userAnswers = userSolution.Answers;
 			
-			foreach (var userAnswer in userAnswers)
+			foreach (var userAnswer in userSolution)
 			{
 				var correctAnswer = correctAnswers
 					.FirstOrDefault(x => x.QuestionId == userAnswer.QuestionId);
