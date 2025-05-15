@@ -30,7 +30,8 @@ namespace ConstructorForTests.Models
 
 	public enum QuestionType
 	{
-		SingleAnswer = 1,
+		Null = 0,
+		SingleAnswer,
 		MultiplyAnswer,
 		MatchingPair,
 		DetailedAnswer

@@ -6,17 +6,17 @@ namespace ConstructorForTests.Controllers
 {
 	[ApiController]
 	[Route("api/v1/UserSolution")]
-	public class UserSolutionsController : ControllerBase
+	public class UserController : ControllerBase
 	{
-		private readonly IUserSolutionRepo _userSolutionRepo;
+		private readonly IUserRepo _userSolutionRepo;
 
-		public UserSolutionsController(IUserSolutionRepo userSolutionRepo)
+		public UserController(IUserRepo userSolutionRepo)
 		{
 			_userSolutionRepo = userSolutionRepo;
 		}
 
 		[HttpPost("{testId}")]
-		public async Task<IActionResult> AcceptUserSolution(List<UserAnswersDto> userSolution, Guid testId)
+		public async Task<IActionResult> AcceptUserSolution(UserSolutionDto userSolution, Guid testId)
 		{
 			return Ok(await _userSolutionRepo.CheckUserAnswers(userSolution, testId));
 		}

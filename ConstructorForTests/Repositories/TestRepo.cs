@@ -54,7 +54,7 @@ namespace ConstructorForTests.Repositories
 				await _context.Tests.AddAsync(newTest);
 				var testId = newTest.Id;
 				await _context.SaveChangesAsync();
-				await AddQuestion(testId, createTestData.Questions);
+				await AddQuestion(testId, createTestData.Questions, newTest);
 
 				return true;
 			}
@@ -65,17 +65,23 @@ namespace ConstructorForTests.Repositories
 			}
 		}
 
-		private async Task AddQuestion(Guid testId, List<CreateQuestionDTO> questions)
+		private async Task AddQuestion(Guid testId, List<CreateQuestionDTO> questions, Test test)
 		{
 			foreach (var question in questions)
 			{
 				var newQuestion = new Question(testId, question.QuestionText, question.Type, question.Mark, question.Order);
+				if (question.Type == QuestionType.DetailedAnswer)
+				{
+					test.ManualCheck = true;
+					_context.Tests.Update(test);
+					await _context.SaveChangesAsync();
+				}
+
 				await _context.Questions.AddAsync(newQuestion);
 				var questionId = newQuestion.Id;
 
 				await AddAnswer(questionId, question.CreateAnswer, testId);
 			}
-			//await _context.SaveChangesAsync();
 		}
 		
 		private async Task AddAnswer(Guid questionId, AnswerDTO answer, Guid testId)

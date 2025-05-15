@@ -1,11 +1,8 @@
 using ConstructorForTests.Database;
-using ConstructorForTests.Filters;
+using ConstructorForTests.Handlers;
 using ConstructorForTests.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ConstructorForTests.UserSolutionHandler;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
 
 internal class Program
 {
@@ -16,9 +13,8 @@ internal class Program
 		// Add services to the container.
 		builder.Services.AddScoped<IAuthenticationRepo, AuthenticationRepo>();
 		builder.Services.AddScoped<ITestRepo, TestRepo>();
-		builder.Services.AddScoped<IUserSolutionRepo, UserSolutionRepo>();
-
-		//builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMemoryDb"));
+		builder.Services.AddScoped<IUserRepo, UserRepo>();
+		builder.Services.AddScoped<ISolutionHandler, SolutionHandler>();
 
 		//Connect Db
 		builder.Services.AddDbContext<AppDbContext>(opt =>
@@ -42,7 +38,7 @@ internal class Program
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerGen();
 
-		builder.Services.AddHttpContextAccessor();
+		builder.Services.AddHttpContextAccessor(); 
 
 		var app = builder.Build();
 
@@ -52,8 +48,6 @@ internal class Program
 			app.UseSwagger();
 			app.UseSwaggerUI();
 		}
-
-		//app.UseRouting();
 
 		app.UseSession();
 
