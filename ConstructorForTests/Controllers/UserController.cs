@@ -18,7 +18,14 @@ namespace ConstructorForTests.Controllers
 		[HttpPost("{testId}")]
 		public async Task<IActionResult> AcceptUserSolution(UserSolutionDto userSolution, Guid testId)
 		{
-			return Ok(await _userSolutionRepo.CheckUserAnswers(userSolution, testId));
+			var newUser = new Models.User(
+				userSolution.FirstName,
+				userSolution.SecondName,
+				userSolution.Patronymic,
+				userSolution.Email);
+			var userId = await _userSolutionRepo.CreateUser(newUser);
+
+			return Ok(await _userSolutionRepo.CheckUserAnswers(userSolution, testId, userId));
 		}
 	}
 }

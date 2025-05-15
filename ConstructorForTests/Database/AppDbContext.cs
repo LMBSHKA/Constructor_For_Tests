@@ -13,6 +13,7 @@ namespace ConstructorForTests.Database
 		public DbSet<MatchingPair> MatchingPairs { get; set; }
 		public DbSet<User> Users { get; set; }
 		public DbSet<UserAnswer> UserAnswers { get; set; }
+		public DbSet<TestResult> TestResults { get; set; }
 		public DbSet<MultipleChoice> UserMultipleChoices { get; set; }
 		public DbSet<MatchingPair> UserMatchingPairs { get; set; }
 
