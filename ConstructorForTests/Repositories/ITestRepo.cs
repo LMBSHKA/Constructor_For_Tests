@@ -8,6 +8,6 @@ namespace ConstructorForTests.Repositories
 		Task<IEnumerable<Test>> GetAllTests();
 		Task<bool> CreateTest(CreateTestDto createTestData);
 		Task<bool> UpdateTest(Guid id, Test updateTestData);
-		Task<GetTestDTO?> GetTestById(Guid id);
+		Task<GetTestDTO?> GetTestById(Guid id, ISession session);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using ConstructorForTests.Dtos;
+using ConstructorForTests.Filters;
 using ConstructorForTests.Models;
 using ConstructorForTests.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace ConstructorForTests.Controllers
 		[HttpGet("GetTest/{id}")]
 		public IActionResult GetTestById(Guid id)
 		{
-			var test = _testRepo.GetTestById(id).Result;
+			var test = _testRepo.GetTestById(id, HttpContext.Session).Result;
 
 			if (test == null)
 				return NotFound();

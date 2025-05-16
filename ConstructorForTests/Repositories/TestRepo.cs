@@ -18,8 +18,9 @@ namespace ConstructorForTests.Repositories
 			return await _context.Tests.ToListAsync();
 		}
 
-		public async Task<GetTestDTO?> GetTestById(Guid id)
+		public async Task<GetTestDTO?> GetTestById(Guid id, ISession session)
 		{
+			
 			if (id == Guid.Empty)
 				return null;
 
@@ -27,6 +28,10 @@ namespace ConstructorForTests.Repositories
 
 			if (test == null)
 				return null;
+
+			if (test.IsActive == false && session.GetString("CuratorId") == null)
+				return null;
+			
 
 			var questions = await _context.Questions
 				.Where(x => x.TestId == id)
