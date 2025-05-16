@@ -17,19 +17,17 @@ namespace ConstructorForTests.Controllers
 		}
 
 		[HttpPost("Registration")]
-		public IActionResult Registration(RegistrationDto registrationData)
+		public async Task<IActionResult> Registration(RegistrationDto registrationData)
 		{
-			return _authenticationRepo
-				.Registration(registrationData)
-				.Result ? Ok() : BadRequest("User already exists");
+			return await _authenticationRepo
+				.Registration(registrationData) ? Ok() : BadRequest("User already exists");
 		}
 
 		[HttpPost("LogIn")]
-		public IActionResult LogIn([FromBody] AuthenticationDto userAccessData)
+		public async Task<IActionResult> LogIn([FromBody] AuthenticationDto userAccessData)
 		{
-			return _authenticationRepo
-				.LogIn(userAccessData, HttpContext.Session)
-				.Result ? Ok() : BadRequest("Invalid LogIn data");
+			return await _authenticationRepo
+				.LogIn(userAccessData, HttpContext.Session) ? Ok() : BadRequest("Invalid LogIn data");
 		}
 
 		[HttpPost("LogOut")]

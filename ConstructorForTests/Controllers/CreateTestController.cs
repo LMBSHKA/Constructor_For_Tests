@@ -18,15 +18,15 @@ namespace ConstructorForTests.Controllers
 		}
 
 		[HttpGet("GetAllTests")]
-		public IActionResult GetAllTests()
+		public async Task<IActionResult> GetAllTests()
 		{
-			return Ok(_testRepo.GetAllTests().Result);
+			return Ok(await _testRepo.GetAllTests());
 		}
 
 		[HttpGet("GetTest/{id}")]
-		public IActionResult GetTestById(Guid id)
+		public async Task<IActionResult> GetTestById(Guid id)
 		{
-			var test = _testRepo.GetTestById(id, HttpContext.Session).Result;
+			var test = await _testRepo.GetTestById(id, HttpContext.Session);
 
 			if (test == null)
 				return NotFound();
@@ -35,19 +35,19 @@ namespace ConstructorForTests.Controllers
 		}
 
 		[HttpPost("CreateTest")]
-		public IActionResult CreateTest([FromBody] CreateTestDto createTestData)
+		public async Task<IActionResult> CreateTest([FromBody] CreateTestDto createTestData)
 		{
 			
-			if (_testRepo.CreateTest(createTestData).Result)
+			if (await _testRepo.CreateTest(createTestData))
 				return Ok();
 
 			return BadRequest("Something went wrong");
 		}
 
 		[HttpPut("Update/{id}")]
-		public IActionResult UpdateTest(Guid id, [FromBody] Test updateTestData)
+		public async Task<IActionResult> UpdateTest(Guid id, [FromBody] Test updateTestData)
 		{
-			if (_testRepo.UpdateTest(id, updateTestData).Result)
+			if (await _testRepo.UpdateTest(id, updateTestData))
 				return Ok();
 
 			return BadRequest("Something went wrong");
