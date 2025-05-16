@@ -21,6 +21,8 @@ namespace ConstructorForTests.Repositories
 		{
 			decimal score = 0;
 
+			await SaveUserAnswer(userSolution.Answers, userId);
+
 			var correctAnswers = await _context.Answers
 				.Where(x => x.TestId == testId)
 				.ToListAsync();
@@ -99,6 +101,53 @@ namespace ConstructorForTests.Repositories
 			}
 
 			return 0;
+		}
+
+		private async Task SaveUserAnswer(List<UserAnswersDto> userAnswers, Guid userId)
+		{
+			foreach (var userAnswer in userAnswers)
+			{
+				if (!string.IsNullOrEmpty(userAnswer.TextAnswer))
+				{
+					var answer = new UserAnswer(userId, userAnswer.QuestionId, Guid.Empty, Guid.Empty, userAnswer.TextAnswer);
+					await _context.UserAnswers.AddAsync(answer);
+				}
+
+				else if (userAnswer.MultipleAnswer.Count > 0)
+				{
+					var guid = Guid.NewGuid();
+					await SaveMultipleAnswer(userAnswer.MultipleAnswer, guid);
+					var answer = new UserAnswer(userId, userAnswer.QuestionId, guid, Guid.Empty, string.Empty);
+					await _context.UserAnswers.AddAsync(answer);
+				}
+
+				else if (userAnswer.MatchingPairs.Count > 0)
+				{
+					var guid = Guid.NewGuid();
+					await SavePairAnswer(userAnswer.MatchingPairs, guid);
+					var answer = new UserAnswer(userId, userAnswer.QuestionId, Guid.Empty, guid, string.Empty);
+					await _context.UserAnswers.AddAsync(answer);
+				}
+			}
+			await _context.SaveChangesAsync();
+		}
+
+		private async Task SaveMultipleAnswer(List<string> multipleAnswers, Guid guid)
+		{
+			foreach (var multipleAnswer in multipleAnswers)
+			{
+				var answer = new UserMultipleChoice { MultipleAnswerId = guid, Answer =  multipleAnswer };
+				await _context.UserMultipleChoices.AddAsync(answer);
+			}
+		}
+
+		private async Task SavePairAnswer(Dictionary<string, string> pairAnswers, Guid guid)
+		{
+			foreach (var pairAnswer in pairAnswers) 
+			{
+				var answer = new UserMatchingPair { PairId = guid, PairKey = pairAnswer.Key, PairValue = pairAnswer.Value };
+				await _context.UserMatchingPairs.AddAsync(answer);
+			}
 		}
 	}
 }

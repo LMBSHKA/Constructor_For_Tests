@@ -3,6 +3,7 @@ using System;
 using ConstructorForTests.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ConstructorForTests.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250516172310_UsersAnswersTable")]
+    partial class UsersAnswersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,7 +90,7 @@ namespace ConstructorForTests.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MatchingPairs");
+                    b.ToTable("MatchingPair");
                 });
 
             modelBuilder.Entity("ConstructorForTests.Models.MultipleChoice", b =>
@@ -105,7 +108,7 @@ namespace ConstructorForTests.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MultipleChoices");
+                    b.ToTable("MultipleChoice");
                 });
 
             modelBuilder.Entity("ConstructorForTests.Models.Question", b =>
@@ -237,46 +240,6 @@ namespace ConstructorForTests.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserAnswers");
-                });
-
-            modelBuilder.Entity("ConstructorForTests.Models.UserMatchingPair", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("PairId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("PairKey")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PairValue")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserMatchingPairs");
-                });
-
-            modelBuilder.Entity("ConstructorForTests.Models.UserMultipleChoice", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Answer")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("MultipleAnswerId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserMultipleChoices");
                 });
 #pragma warning restore 612, 618
         }

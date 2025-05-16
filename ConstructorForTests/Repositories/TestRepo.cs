@@ -86,6 +86,7 @@ namespace ConstructorForTests.Repositories
 				var questionId = newQuestion.Id;
 
 				await AddAnswer(questionId, question.CreateAnswer, testId);
+				await _context.SaveChangesAsync();
 			}
 		}
 		

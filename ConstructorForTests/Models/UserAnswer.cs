@@ -8,5 +8,14 @@
 		public Guid MultipleAnswerId { get; set; }
 		public Guid PairId { get; set; }
 		public string? Text { get; set; }
+
+		public UserAnswer(Guid userId, Guid questionId, Guid multipleAnswerId, Guid pairId, string text)
+		{
+			UserId = userId;
+			QuestionId = questionId;
+			MultipleAnswerId = multipleAnswerId;
+			PairId = pairId;
+			Text = text;
+		}
 	}
 }
