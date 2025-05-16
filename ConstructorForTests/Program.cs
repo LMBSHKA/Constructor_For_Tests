@@ -1,8 +1,10 @@
 using ConstructorForTests.Database;
 using ConstructorForTests.Handlers;
+using ConstructorForTests.Quartz;
 using ConstructorForTests.Repositories;
 using ConstructorForTests.UserSolutionHandler;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 
 internal class Program
 {
@@ -31,6 +33,22 @@ internal class Program
 			options.Cookie.HttpOnly = true;
 			options.Cookie.IsEssential = true;
 		});
+
+		//Add quartz
+		builder.Services.AddQuartz(q =>
+		{
+			var jobKey = new JobKey("CheckDeadlineJob");
+			q.AddJob<CheckDeadlineJob>(opts => opts.WithIdentity(jobKey));
+
+			q.AddTrigger(opts => opts
+			.ForJob(jobKey)
+			.WithIdentity("CheckDeadlineJob-trigger")
+			//Every minutes
+			//.WithCronSchedule("0 * * ? * *")
+			.WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(00, 00))
+			);
+		});
+		builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 		builder.Services.AddControllers();
 
