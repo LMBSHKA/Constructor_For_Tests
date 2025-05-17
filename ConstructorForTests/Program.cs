@@ -1,3 +1,4 @@
+using ConstructorForTests.API;
 using ConstructorForTests.Database;
 using ConstructorForTests.Handlers;
 using ConstructorForTests.Quartz;
@@ -17,6 +18,7 @@ internal class Program
 		builder.Services.AddScoped<ITestRepo, TestRepo>();
 		builder.Services.AddScoped<IUserRepo, UserRepo>();
 		builder.Services.AddScoped<ISolutionHandler, SolutionHandler>();
+		builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 		//Connect Db
 		builder.Services.AddDbContext<AppDbContext>(opt =>

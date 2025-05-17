@@ -1,4 +1,5 @@
-﻿using ConstructorForTests.Database;
+﻿using ConstructorForTests.API;
+using ConstructorForTests.Database;
 using ConstructorForTests.Dtos;
 using ConstructorForTests.Models;
 using Microsoft.EntityFrameworkCore;
@@ -8,8 +9,10 @@ namespace ConstructorForTests.Repositories
 	public class TestRepo : ITestRepo
 	{
 		private readonly AppDbContext _context;
-		public TestRepo(AppDbContext context)
+		private readonly IEmailSender _sender;
+		public TestRepo(AppDbContext context, IEmailSender sender)
 		{
+			_sender = sender;
 			_context = context;
 		}
 

@@ -1,4 +1,5 @@
-﻿using ConstructorForTests.Database;
+﻿using ConstructorForTests.API;
+using ConstructorForTests.Database;
 using ConstructorForTests.Dtos;
 using ConstructorForTests.Handlers;
 using ConstructorForTests.Models;
@@ -10,9 +11,11 @@ namespace ConstructorForTests.Repositories
 	{
 		private readonly AppDbContext _context;
 		private readonly ISolutionHandler _solutionHandler;
+		private readonly IEmailSender _emailSender;
 
-		public UserRepo(AppDbContext context, ISolutionHandler solutionHandler)
+		public UserRepo(AppDbContext context, ISolutionHandler solutionHandler, IEmailSender emailSender)
 		{
+			_emailSender = emailSender;
 			_solutionHandler = solutionHandler;
 			_context = context;
 		}
@@ -30,13 +33,18 @@ namespace ConstructorForTests.Repositories
 			var questions = await _context.Questions
 				.Where(x => x.TestId == testId)
 				.ToListAsync();
-			
+
+			var test = await _context.Tests.FirstOrDefaultAsync(x => x.Id == testId) ?? throw new Exception("Invalid test id");
+
 			foreach (var userAnswer in userSolution.Answers)
 			{
 				score += await CheckAnswer(correctAnswers, questions, userAnswer);
 			}
 
-			await CreateTestResult(testId, userId, score);
+			var isPassed = await CreateTestResult(test, userId, score);
+
+			if (test.ManualCheck == false)
+				await _emailSender.SendEmail(userSolution.Email, score, isPassed);
 
 			return score;
 		}
@@ -49,19 +57,19 @@ namespace ConstructorForTests.Repositories
 			return newUser.Id;
 		}
 
-		private async Task CreateTestResult(Guid testId, Guid userId, decimal score)
+		private async Task<bool> CreateTestResult(Test test, Guid userId, decimal score)
 		{
-			var isPassed = await CheckPassage(testId, score);
-			var testResult = new TestResult(testId, userId, score, isPassed);
+			var isPassed = CheckPassage(test, score);
+			var testResult = new TestResult(test.Id, userId, score, isPassed);
 
 			await _context.TestResults.AddAsync(testResult);
 			await _context.SaveChangesAsync();
+
+			return isPassed;
 		}
 
-		private async Task<bool> CheckPassage(Guid testId, decimal score)
+		private bool CheckPassage(Test test, decimal score)
 		{
-			var test = await _context.Tests.FirstOrDefaultAsync(x => x.Id == testId) ?? throw new Exception("Invalid test id");
-
 			if (test.ScoreToPass <= score)
 				return true;
 
