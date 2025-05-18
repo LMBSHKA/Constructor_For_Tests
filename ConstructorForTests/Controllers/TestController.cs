@@ -8,11 +8,11 @@ namespace ConstructorForTests.Controllers
 {
 	[ApiController]
 	[Route("api/v1/operationsOnTest")]
-	public class CreateTestController : ControllerBase
+	public class TestController : ControllerBase
 	{
 		private readonly ITestRepo _testRepo;
 
-		public CreateTestController(ITestRepo testRepo)
+		public TestController(ITestRepo testRepo)
 		{
 			_testRepo = testRepo;
 		}
@@ -52,6 +52,11 @@ namespace ConstructorForTests.Controllers
 
 			return BadRequest("Something went wrong");
 		}
-	}
 
+		[HttpGet("GetStatistic")]
+		public async Task<IActionResult> GetStatistic()
+		{
+			return Ok(await _testRepo.GetStatistic());
+		}
+	}
 }

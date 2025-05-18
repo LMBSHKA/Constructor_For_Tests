@@ -16,6 +16,31 @@ namespace ConstructorForTests.Repositories
 			_context = context;
 		}
 
+		public async Task<List<StatisticDto>> GetStatistic()
+		{
+			var statistics = new List<StatisticDto>();
+			var listTestResults = await _context.TestResults.ToListAsync();
+			
+			foreach (var testResult in listTestResults)
+			{
+				var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == testResult.UserId);
+				var test = await _context.Tests.FirstOrDefaultAsync(x => x.Id == testResult.TestId);
+				if (user != null && test != null)
+				{
+					var statistic = new StatisticDto(
+						string.Join(' ', [user.FirstName, user.SecondName, user.Patronymic]),
+						user.Email,
+						test.Title,
+						testResult.IsPassed,
+						testResult.TotalScore);
+
+					statistics.Add(statistic);
+				}
+			}
+
+			return statistics;
+		}
+
 		public async Task<IEnumerable<Test>> GetAllTests()
 		{
 			return await _context.Tests.ToListAsync();
@@ -105,12 +130,12 @@ namespace ConstructorForTests.Repositories
 			}
 
 
-			if (answer.MultipleAnswer.Count > 0)
+			else if (answer.MultipleAnswer.Count > 0)
 			{
 				await AddMultipleAnswer(answer.MultipleAnswer, testId, questionId);
 			}
 
-			if (answer.MatchingPairs.Count > 0)
+			else if (answer.MatchingPairs.Count > 0)
 			{
 				await AddPairAnswer(answer.MatchingPairs, testId, questionId);
 			}

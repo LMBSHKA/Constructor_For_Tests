@@ -80,32 +80,34 @@ namespace ConstructorForTests.Repositories
 		private async Task<decimal> CheckAnswer(List<Answer> correctAnswers, List<Question> questions, UserAnswersDto userAnswer)
 		{
 			var correctAnswer = correctAnswers.FirstOrDefault(x => x.QuestionId == userAnswer.QuestionId);
-
-			if (!string.IsNullOrEmpty(correctAnswer.TextAnswer))
+			if (correctAnswer == null)
 			{
-				if (correctAnswer.TextAnswer == userAnswer.TextAnswer)
+				if (!string.IsNullOrEmpty(correctAnswer.TextAnswer))
 				{
-					return questions.FirstOrDefault(x => x.Id == correctAnswer.QuestionId).Mark;
+					if (correctAnswer.TextAnswer == userAnswer.TextAnswer)
+					{
+						return questions.FirstOrDefault(x => x.Id == correctAnswer.QuestionId).Mark;
+					}
 				}
-			}
 
-			else if (correctAnswer.MultipleAnswerId != Guid.Empty)
-			{
-				var correctMultipleAnswer = await _context.MultipleChoices
-					.Where(x => x.MultipleAnswerId == correctAnswer.MultipleAnswerId)
-					.Select(x => x.Answer)
-					.ToListAsync();
+				else if (correctAnswer.MultipleAnswerId != Guid.Empty)
+				{
+					var correctMultipleAnswer = await _context.MultipleChoices
+						.Where(x => x.MultipleAnswerId == correctAnswer.MultipleAnswerId)
+						.Select(x => x.Answer)
+						.ToListAsync();
 
-				return await _solutionHandler.CheckMultipleAnswer(correctAnswer, userAnswer, questions, correctMultipleAnswer);
-			}
+					return await _solutionHandler.CheckMultipleAnswer(correctAnswer, userAnswer, questions, correctMultipleAnswer);
+				}
 
-			else if (correctAnswer.PairId != Guid.Empty)
-			{
-				var correctPairsAnswer = await _context.MatchingPairs
-					.Where(x => x.PairId == correctAnswer.PairId)
-					.ToListAsync();
+				else if (correctAnswer.PairId != Guid.Empty)
+				{
+					var correctPairsAnswer = await _context.MatchingPairs
+						.Where(x => x.PairId == correctAnswer.PairId)
+						.ToListAsync();
 
-				return await _solutionHandler.CheckPairAnswer(correctAnswer, userAnswer, questions, correctPairsAnswer);
+					return await _solutionHandler.CheckPairAnswer(correctAnswer, userAnswer, questions, correctPairsAnswer);
+				}
 			}
 
 			return 0;
