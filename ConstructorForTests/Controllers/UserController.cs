@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ConstructorForTests.Controllers
 {
+	/// <summary>
+	/// Endpoint-ы для проходящего тесты
+	/// </summary>
 	[ApiController]
 	[Route("api/v1/UserSolution")]
 	public class UserController : ControllerBase
@@ -15,6 +18,13 @@ namespace ConstructorForTests.Controllers
 			_userSolutionRepo = userSolutionRepo;
 		}
 
+		/// <summary>
+		/// Получение ответов на тест от прохдящего
+		/// </summary>
+		/// <returns></returns>
+		/// <response code="200">Успешное выполнение</response>
+		/// <response code="400">Ошибка API(Переданы некорретные данные)</response>
+		/// <response code="500">Ошибка сервера</response>
 		[HttpPost("{testId}")]
 		public async Task<IActionResult> AcceptUserSolution(UserSolutionDto userSolution, Guid testId)
 		{
