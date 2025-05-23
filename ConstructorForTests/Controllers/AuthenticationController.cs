@@ -22,6 +22,16 @@ namespace ConstructorForTests.Controllers
 		/// <summary>
 		/// Регистрация для руководителя
 		/// </summary>
+		/// <remarks>
+		/// Note
+		///  
+		///     POST /Todo
+		///     {
+		///        "email": "email@email.com",
+		///        "password": "12345"
+		///     }
+		/// 
+		/// </remarks>
 		/// <returns></returns>
 		/// <response code="200">Успешное выполнение</response>
 		/// <response code="400">Пользователь уже существует или ошибка API(какие-то данные были неверными)</response>
@@ -36,6 +46,16 @@ namespace ConstructorForTests.Controllers
 		/// <summary>
 		/// Вход для руководителя
 		/// </summary>
+		/// <remarks>
+		/// Note
+		/// 
+		///     POST /Todo
+		///     {
+		///        "email": "email@email.com",
+		///        "password": "12345"
+		///     }
+		/// 
+		/// </remarks>
 		/// <returns></returns>
 		/// <response code="200">Успешное выполнение</response>
 		/// <response code="400">Неверные данные для входа или ошибка API(какие-то данные были неверными)</response>

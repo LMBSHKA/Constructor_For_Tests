@@ -38,6 +38,7 @@ namespace ConstructorForTests.Controllers
 		/// Получение теста по его идентификатору
 		/// </summary>
 		/// <returns></returns>
+		/// <param name="id">Указывать id теста</param>
 		/// <response code="200">Успешное выполнение</response>
 		/// <response code="404">Тест не найден</response>
 		/// <response code="500">Ошибка сервера</response>
@@ -56,6 +57,49 @@ namespace ConstructorForTests.Controllers
 		/// Создание теста
 		/// Только авторизованные пользователи
 		/// </summary>
+		/// <remarks>
+		/// Note в questions указывать только один тип ответа все три не нужно, а если ручной ввод то ничего не указывать
+		/// 
+		/// Type 
+		///     {
+		///         Null = 0,
+		///         SingleAnswer = 1,
+		///         MultiplyAnswer = 2,
+		///         MatchingPair = 3,
+		///         DetailedAnswer = 4
+		///     }
+		/// 
+		///     POST /Todo
+		///     {
+		///          "title": "new test",
+		///          "startAt": "2025-05-23",
+		///          "endAt": "2025-05-26",
+		///          "scoreToPass": 1-,
+		///          "questions": 
+		///          [
+		///              {
+		///                  "questionText": "answer",
+		///                  "type": 0,
+		///                  "mark": 1,
+		///                  "order": 1,
+		///                  "createAnswer": 
+		///                  {
+		///                      "textAnswer": "answer",
+		///                      "multipleAnswer": 
+		///                      [
+		///		                     "answer1", "answer2"
+		///		                 ],
+		///                      "matchingPairs": 
+		///                      {
+		///                          "pair1": "pair1",
+		///                          "pair2": "pair2",
+		///                          "pair3": "pair3"
+		///                      }
+		///                  }
+		///              }
+		///          ]
+		///     }
+		/// </remarks>
 		/// <returns></returns>
 		/// <response code="200">Успешное выполнение</response>
 		/// <response code="400">Ошибка API(Переданы некорретные данные)</response>

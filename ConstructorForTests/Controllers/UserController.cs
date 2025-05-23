@@ -21,6 +21,35 @@ namespace ConstructorForTests.Controllers
 		/// <summary>
 		/// Получение ответов на тест от прохдящего
 		/// </summary>
+		/// <remarks>
+		/// Note в answer указывать что-то одно все типы ответов не нужно
+		/// 
+		///     POST /Todo
+		///     {
+		///         "firstName": "Ivan",
+		///         "secondName": "Ivanov",
+		///         "patronymic": "Ivanovich",
+		///         "email": "email@email.com",
+		///         "answers": 
+		///         [
+		///             {
+		///                 "questionId" "0e7ad584-7788-4ab1-95a6-ca0a5b444cbb",
+		///                 "textAnswer": "answer",
+		///                 "multipleAnswer": 
+		///                 [
+		///		                "answer1", "answer2"
+		///		            ],
+		///                 "matchingPairs": 
+		///                 {
+		///                     "pair1": "pair1",
+		///                     "pair2": "pair2",
+		///                     "pair3": "pair3"
+		///                 }
+		///             }
+		///         ]
+		///     }
+		/// </remarks>
+		/// <param name="testId">указывать id теста</param>
 		/// <returns></returns>
 		/// <response code="200">Успешное выполнение</response>
 		/// <response code="400">Ошибка API(Переданы некорретные данные)</response>
