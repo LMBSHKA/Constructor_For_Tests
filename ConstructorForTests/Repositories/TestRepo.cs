@@ -85,9 +85,9 @@ namespace ConstructorForTests.Repositories
 					);
 
 				await _context.Tests.AddAsync(newTest);
-				var testId = newTest.Id;
 				await _context.SaveChangesAsync();
-				await AddQuestion(testId, createTestData.Questions, newTest);
+				await AddQuestion(newTest.Id, createTestData.Questions, newTest);
+				await _context.SaveChangesAsync();
 
 				return true;
 			}
@@ -103,18 +103,13 @@ namespace ConstructorForTests.Repositories
 			foreach (var question in questions)
 			{
 				var newQuestion = new Question(testId, question.QuestionText, question.Type, question.Mark, question.Order);
+				await _context.Questions.AddAsync(newQuestion);
 				if (question.Type == QuestionType.DetailedAnswer)
 				{
 					test.ManualCheck = true;
-					_context.Tests.Update(test);
-					await _context.SaveChangesAsync();
 				}
 
-				await _context.Questions.AddAsync(newQuestion);
-				var questionId = newQuestion.Id;
-
-				await AddAnswer(questionId, question.CreateAnswer, testId);
-				await _context.SaveChangesAsync();
+				await AddAnswer(newQuestion.Id, question.CreateAnswer, testId);
 			}
 		}
 		
@@ -126,7 +121,7 @@ namespace ConstructorForTests.Repositories
 				await _context.Answers.AddAsync(newAnswer);
 				var guid = newAnswer.Id;
 
-				var test = _context.Answers.FirstOrDefaultAsync(x => x.Id == guid);
+				var test = await _context.Answers.FirstOrDefaultAsync(x => x.Id == guid);
 			}
 
 
@@ -151,7 +146,6 @@ namespace ConstructorForTests.Repositories
 			{
 				var newSingleAnswer = new MultipleChoice(guid, singleAnswer);
 				await _context.MultipleChoices.AddAsync(newSingleAnswer);
-				
 			}
 		}
 

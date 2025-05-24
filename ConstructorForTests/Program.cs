@@ -45,10 +45,16 @@ internal class Program
 		builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 		//Connect Db
+		//builder.Services.AddDbContextFactory<AppDbContext>(opt => 
+		//opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+		//);
 		builder.Services.AddDbContext<AppDbContext>(opt =>
 		{
 			opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-		});
+
+		},
+		ServiceLifetime.Scoped);
+
 		builder.Services.AddDistributedMemoryCache();
 
 		//Add Sesion options
