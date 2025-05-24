@@ -63,6 +63,7 @@ namespace ConstructorForTests.Repositories
 
 			var questions = await _context.Questions
 				.Where(x => x.TestId == id)
+				.OrderBy(x => x.Order)
 				.ToListAsync();
 
 			return new GetTestDTO(test, questions);
@@ -100,9 +101,10 @@ namespace ConstructorForTests.Repositories
 
 		private async Task AddQuestion(Guid testId, List<CreateQuestionDTO> questions, Test test)
 		{
+			var order = 1;
 			foreach (var question in questions)
 			{
-				var newQuestion = new Question(testId, question.QuestionText, question.Type, question.Mark, question.Order);
+				var newQuestion = new Question(testId, question.QuestionText, question.Type, question.Mark, order);
 				await _context.Questions.AddAsync(newQuestion);
 				if (question.Type == QuestionType.DetailedAnswer)
 				{
@@ -110,6 +112,7 @@ namespace ConstructorForTests.Repositories
 				}
 
 				await AddAnswer(newQuestion.Id, question.CreateAnswer, testId);
+				order++;
 			}
 		}
 		
