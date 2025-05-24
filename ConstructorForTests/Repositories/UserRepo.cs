@@ -80,13 +80,13 @@ namespace ConstructorForTests.Repositories
 		private async Task<decimal> CheckAnswer(List<Answer> correctAnswers, List<Question> questions, UserAnswersDto userAnswer)
 		{
 			var correctAnswer = correctAnswers.FirstOrDefault(x => x.QuestionId == userAnswer.QuestionId);
-			if (correctAnswer == null)
+			if (correctAnswer != null)
 			{
 				if (!string.IsNullOrEmpty(correctAnswer.TextAnswer))
 				{
 					if (correctAnswer.TextAnswer == userAnswer.TextAnswer)
 					{
-						return questions.FirstOrDefault(x => x.Id == correctAnswer.QuestionId).Mark;
+						return 1;
 					}
 				}
 

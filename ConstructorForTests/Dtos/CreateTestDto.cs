@@ -11,7 +11,6 @@ namespace ConstructorForTests.Dtos
 		public DateTime EndAt { get; set; } = DateTime.MinValue;
 		public bool IsActive { get; set; } = false;
 		public decimal ScoreToPass { get; set; } = decimal.Zero;
-		public bool ManualCheck { get; set; } = false;
 		public List<CreateQuestionDTO>? Questions { get; set; }
 	}
 }

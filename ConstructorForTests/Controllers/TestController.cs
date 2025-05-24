@@ -74,14 +74,12 @@ namespace ConstructorForTests.Controllers
 		///          "title": "new test",
 		///          "startAt": "2025-05-23",
 		///          "endAt": "2025-05-26",
-		///          "scoreToPass": 1-,
+		///          "scoreToPass": 1,
 		///          "questions": 
 		///          [
 		///              {
 		///                  "questionText": "answer",
 		///                  "type": 0,
-		///                  "mark": 1,
-		///                  "order": 1,
 		///                  "createAnswer": 
 		///                  {
 		///                      "textAnswer": "answer",

@@ -104,7 +104,7 @@ namespace ConstructorForTests.Repositories
 			var order = 1;
 			foreach (var question in questions)
 			{
-				var newQuestion = new Question(testId, question.QuestionText, question.Type, question.Mark, order);
+				var newQuestion = new Question(testId, question.QuestionText, question.Type, 1, order);
 				await _context.Questions.AddAsync(newQuestion);
 				if (question.Type == QuestionType.DetailedAnswer)
 				{
@@ -118,7 +118,7 @@ namespace ConstructorForTests.Repositories
 		
 		private async Task AddAnswer(Guid questionId, AnswerDTO answer, Guid testId)
 		{
-			if (!string.IsNullOrEmpty(answer.TextAnswer)) 
+			if (!string.IsNullOrEmpty(answer.TextAnswer))
 			{
 				var newAnswer = new Answer(questionId, Guid.Empty, Guid.Empty, answer.TextAnswer, testId);
 				await _context.Answers.AddAsync(newAnswer);

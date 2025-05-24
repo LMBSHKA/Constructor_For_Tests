@@ -25,7 +25,7 @@ namespace ConstructorForTests.UserSolutionHandler
 				}
 
 				if (flag)
-					score += questions.FirstOrDefault(x => x.Id == correctAnswer.QuestionId).Mark;
+					score = 1;
 			}
 
 			return score;
@@ -50,8 +50,7 @@ namespace ConstructorForTests.UserSolutionHandler
 				}
 
 				if (flag)
-					score += questions
-						.FirstOrDefault(x => x.Id == correctAnswer.QuestionId).Mark;
+					score = 1;
 			}
 
 			return score;
