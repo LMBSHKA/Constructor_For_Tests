@@ -1,6 +1,7 @@
 ﻿using ConstructorForTests.API;
 using ConstructorForTests.Database;
 using ConstructorForTests.Dtos;
+using ConstructorForTests.Handlers;
 using ConstructorForTests.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,10 +11,12 @@ namespace ConstructorForTests.Repositories
 	{
 		private readonly AppDbContext _context;
 		private readonly IEmailSender _sender;
-		public TestRepo(AppDbContext context, IEmailSender sender)
+		private readonly ITestHandler _testHandler;
+		public TestRepo(AppDbContext context, IEmailSender sender, ITestHandler testHandler)
 		{
 			_sender = sender;
 			_context = context;
+			_testHandler = testHandler;
 		}
 
 		public async Task<List<StatisticDto>> GetStatistic()
@@ -59,14 +62,18 @@ namespace ConstructorForTests.Repositories
 
 			if (test.IsActive == false && session.GetString("CuratorId") == null)
 				return null;
-			
+
 
 			var questions = await _context.Questions
 				.Where(x => x.TestId == id)
 				.OrderBy(x => x.Order)
 				.ToListAsync();
 
-			return new GetTestDTO(test, questions);
+			var listGetQuestions = new List<BaseQuestionDto>();
+
+			_testHandler.GetTestById(listGetQuestions, questions);
+
+			return new GetTestDTO(test, listGetQuestions);
 		}
 
 		public async Task<bool> CreateTest(CreateTestDto createTestData)
@@ -104,7 +111,8 @@ namespace ConstructorForTests.Repositories
 			var order = 1;
 			foreach (var question in questions)
 			{
-				var newQuestion = new Question(testId, question.QuestionText, question.Type, 1, order);
+				var newQuestion = new Question(testId, question.QuestionText, question.Type, 1, 
+					order, question.AnswerOptions, question.PairKey, question.PairValue);
 				await _context.Questions.AddAsync(newQuestion);
 				if (question.Type == QuestionType.DetailedAnswer)
 				{

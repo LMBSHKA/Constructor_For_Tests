@@ -5,12 +5,12 @@ namespace ConstructorForTests.Dtos
 {
 	public class GetTestDTO : CreateTestDto
 	{
-		public List<Question> Questions { get; set; }
+		public List<BaseQuestionDto> Questions { get; set; }
 
 		public GetTestDTO() { }
 		public bool ManualCheck { get; set; }
 
-		public GetTestDTO(Test test, List<Question> questions)
+		public GetTestDTO(Test test, List<BaseQuestionDto> questions)
 		{
 			Title = test.Title;
 			StartAt = DateTime.ParseExact(test.StartAt, "dd.MM.yyyy", CultureInfo.InvariantCulture);

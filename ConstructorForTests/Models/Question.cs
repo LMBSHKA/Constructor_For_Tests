@@ -9,6 +9,9 @@ namespace ConstructorForTests.Models
 		public Guid TestId { get; set; } = Guid.Empty;
 		[Required]
 		public string? QuestionText { get; set; }
+		public string? AnswerOptions { get; set; } = string.Empty;
+		public string? PairKey { get; set; } = string.Empty;
+		public string? PairValue { get; set;} = string.Empty;
 		[Required]
 		public QuestionType Type { get; set; }
 		[Required]
@@ -18,10 +21,14 @@ namespace ConstructorForTests.Models
 
 		public Question() { }
 
-		public Question(Guid testId, string questionText, QuestionType questionType, decimal mark, int order)
+		public Question(Guid testId, string questionText, QuestionType questionType, 
+			decimal mark, int order, string answerOptions, string pairKey, string pairValue)
 		{
 			TestId = testId;
 			QuestionText = questionText;
+			AnswerOptions = answerOptions;
+			PairKey = pairKey;
+			PairValue = pairValue;
 			Type = questionType;
 			Mark = mark;
 			Order = order;

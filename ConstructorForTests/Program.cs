@@ -7,6 +7,8 @@ using ConstructorForTests.UserSolutionHandler;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Quartz;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 internal class Program
 {
@@ -43,18 +45,16 @@ internal class Program
 		builder.Services.AddScoped<IUserRepo, UserRepo>();
 		builder.Services.AddScoped<ISolutionHandler, SolutionHandler>();
 		builder.Services.AddScoped<IEmailSender, EmailSender>();
+		builder.Services.AddScoped<ITestHandler, TestHandler>();
 
 		//Connect Db
-		//builder.Services.AddDbContextFactory<AppDbContext>(opt => 
-		//opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-		//);
-		builder.Services.AddDbContext<AppDbContext>(opt =>
-		{
-			opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+		//builder.Services.AddDbContext<AppDbContext>(opt =>
+		//{
+		//	opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 
-		},
-		ServiceLifetime.Scoped);
-
+		//},
+		//ServiceLifetime.Scoped);
+		builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMemoryDb"));
 		builder.Services.AddDistributedMemoryCache();
 
 		//Add Sesion options
@@ -82,7 +82,14 @@ internal class Program
 		});
 		builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
-		builder.Services.AddControllers();
+		builder.Services.AddControllers().AddJsonOptions(options =>
+		{
+			options.JsonSerializerOptions.WriteIndented = true;
+			options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+			options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+			options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+			//options.JsonSerializerOptions.DiscriminatorConverter = new JsonDiscriminatorConverter();
+		});
 
 		// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 		builder.Services.AddEndpointsApiExplorer();

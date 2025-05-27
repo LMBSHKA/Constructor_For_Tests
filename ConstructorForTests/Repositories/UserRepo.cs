@@ -77,6 +77,7 @@ namespace ConstructorForTests.Repositories
 				return false;
 		}
 
+		//Сделать рефакторинг убрать ненужные передачи данных в хэндлеры (correctAnswer, questions)
 		private async Task<decimal> CheckAnswer(List<Answer> correctAnswers, List<Question> questions, UserAnswersDto userAnswer)
 		{
 			var correctAnswer = correctAnswers.FirstOrDefault(x => x.QuestionId == userAnswer.QuestionId);
