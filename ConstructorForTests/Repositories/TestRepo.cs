@@ -44,7 +44,7 @@ namespace ConstructorForTests.Repositories
 			return statistics;
 		}
 
-		public async Task<IEnumerable<Test>> GetAllTests()
+		public async Task<List<Test>> GetAllTests()
 		{
 			return await _context.Tests.ToListAsync();
 		}
@@ -63,7 +63,6 @@ namespace ConstructorForTests.Repositories
 			if (test.IsActive == false && session.GetString("CuratorId") == null)
 				return null;
 
-
 			var questions = await _context.Questions
 				.Where(x => x.TestId == id)
 				.OrderBy(x => x.Order)
@@ -76,7 +75,7 @@ namespace ConstructorForTests.Repositories
 			return new GetTestDTO(test, listGetQuestions);
 		}
 
-		public async Task<bool> CreateTest(CreateTestDto createTestData)
+		public async Task<bool> CreateTest(CreateTestDto createTestData, ISession session)
 		{
 			try
 			{
@@ -89,7 +88,8 @@ namespace ConstructorForTests.Repositories
 					createTestData.EndAt.ToString("dd.MM.yyyy"),
 					true,
 					createTestData.ScoreToPass,
-					false
+					false,
+					session.GetString("CuratorId")!
 					);
 
 				await _context.Tests.AddAsync(newTest);

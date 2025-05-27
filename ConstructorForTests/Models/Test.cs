@@ -7,6 +7,8 @@ namespace ConstructorForTests.Models
 		[Key]
 		public Guid Id { get; set; } = Guid.Empty;
 		[Required]
+		public string UserId { get; set; } = null;
+		[Required]
 		public string Title { get; set; } = "null";
 		[Required]
 		public string StartAt { get; set; } = String.Empty;
@@ -22,7 +24,7 @@ namespace ConstructorForTests.Models
 		public Test() { }
 
 		public Test(string title, string startAt, string endAt,
-			bool isActive, decimal scoreToPass, bool manualCheck)
+			bool isActive, decimal scoreToPass, bool manualCheck, string userId)
 		{
 			Title = title;
 			StartAt = startAt;
@@ -30,6 +32,7 @@ namespace ConstructorForTests.Models
 			IsActive = isActive;
 			ScoreToPass = scoreToPass;
 			ManualCheck = manualCheck;
+			UserId = userId;
 		}
 	}
 }

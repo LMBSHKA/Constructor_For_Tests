@@ -31,7 +31,9 @@ namespace ConstructorForTests.Controllers
 		[HttpGet("GetAllTests")]
 		public async Task<IActionResult> GetAllTests()
 		{
-			return Ok(await _testRepo.GetAllTests());
+			var listTests = await _testRepo.GetAllTests();
+			var testsByUserId = listTests.Where(x => x.UserId == HttpContext.Session.GetString("CuratorId"));
+			return Ok(testsByUserId);
 		}
 
 		/// <summary>
@@ -107,7 +109,7 @@ namespace ConstructorForTests.Controllers
 		public async Task<IActionResult> CreateTest([FromBody] CreateTestDto createTestData)
 		{
 			
-			if (await _testRepo.CreateTest(createTestData))
+			if (await _testRepo.CreateTest(createTestData, HttpContext.Session))
 				return Ok();
 
 			return BadRequest("Something went wrong");
