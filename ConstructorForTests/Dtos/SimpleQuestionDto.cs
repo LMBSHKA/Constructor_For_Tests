@@ -10,8 +10,6 @@ namespace ConstructorForTests.Dtos
 			TestId = question.TestId;
 			QuestionText = question.QuestionText;
 			Type = question.Type;
-			Mark = question.Mark;
-			Order = question.Order;
 		}
 	}
 }

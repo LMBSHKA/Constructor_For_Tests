@@ -9,7 +9,7 @@ namespace ConstructorForTests.Models
 		[Required]
 		public string UserId { get; set; } = null;
 		[Required]
-		public string Title { get; set; } = "null";
+		public string Title { get; set; } = null;
 		[Required]
 		public string StartAt { get; set; } = String.Empty;
 		[Required]
@@ -20,7 +20,9 @@ namespace ConstructorForTests.Models
 		public decimal ScoreToPass { get; set; } = decimal.Zero;
 		[Required]
 		public bool ManualCheck { get; set; } = false;
+		[Required]
 		public string MessageAboutPassing { get; set; } = null;
+		[Required]
 		public string FailureMessage { get; set; } = null;
 
 		public Test() { }

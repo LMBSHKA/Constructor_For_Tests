@@ -13,8 +13,6 @@ namespace ConstructorForTests.Dtos
 			QuestionText = question.QuestionText;
 			Answers = answers;
 			Type = question.Type;
-			Mark = question.Mark;
-			Order = question.Order;
 		}
 	}
 }
