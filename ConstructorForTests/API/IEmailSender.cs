@@ -2,6 +2,6 @@
 {
 	public interface IEmailSender
 	{
-		Task SendEmail(string toAdressEmail, decimal score, bool isPassed);
+		Task SendEmail(string toAdressEmail, decimal score, string message);
 	}
 }

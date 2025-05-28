@@ -44,7 +44,12 @@ namespace ConstructorForTests.Repositories
 			var isPassed = await CreateTestResult(test, userId, score);
 
 			if (test.ManualCheck == false)
-				await _emailSender.SendEmail(userSolution.Email, score, isPassed);
+			{
+				if (isPassed)
+					await _emailSender.SendEmail(userSolution.Email, score, test.MessageAboutPassing);
+				else
+					await _emailSender.SendEmail(userSolution.Email, score, test.FailureMessage);
+			}
 
 			return score;
 		}

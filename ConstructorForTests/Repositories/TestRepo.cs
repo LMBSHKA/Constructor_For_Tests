@@ -74,6 +74,7 @@ namespace ConstructorForTests.Repositories
 			return new GetTestDTO(test, listGetQuestions);
 		}
 
+		//Исправить лучше передавать id сразу а не ISession
 		public async Task<bool> CreateTest(CreateTestDto createTestData, ISession session)
 		{
 			try
@@ -88,7 +89,9 @@ namespace ConstructorForTests.Repositories
 					true,
 					createTestData.ScoreToPass,
 					false,
-					session.GetString("CuratorId")!
+					session.GetString("CuratorId")!,
+					createTestData.MessageAboutPassing,
+					createTestData.FailureMessage
 					);
 
 				await _context.Tests.AddAsync(newTest);

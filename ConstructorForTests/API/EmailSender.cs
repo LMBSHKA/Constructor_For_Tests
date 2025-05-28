@@ -5,14 +5,12 @@ namespace ConstructorForTests.API
 {
 	public class EmailSender : IEmailSender
 	{
-		public async Task SendEmail(string toAdressEmail, decimal score, bool isPassed)
+		public async Task SendEmail(string toAdressEmail, decimal score, string message)
 		{
 			var fromAdress = "stajirovkiural@gmail.com";
 			var title = "Результат теста стажировки";
 			var subject = "Результат теста";
-			var responsePassed = isPassed ? "прошли" : "не прошли";
-			var body = $"Ваш тестовый балл: {score},\nвы {responsePassed} тест";
-
+			var body = message + $" Ваш балл: {score}";
 			using var mimeMessage = new MimeMessage();
 
 			mimeMessage.From.Add(new MailboxAddress(title, fromAdress));

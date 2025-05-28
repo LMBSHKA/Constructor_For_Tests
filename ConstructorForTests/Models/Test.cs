@@ -20,13 +20,13 @@ namespace ConstructorForTests.Models
 		public decimal ScoreToPass { get; set; } = decimal.Zero;
 		[Required]
 		public bool ManualCheck { get; set; } = false;
-		//public string MessageAboutPassing { get; set; } = null;
-		//public string FailureMessage { get; set; } = null;
+		public string MessageAboutPassing { get; set; } = null;
+		public string FailureMessage { get; set; } = null;
 
 		public Test() { }
 
-		public Test(string title, string startAt, string endAt,
-			bool isActive, decimal scoreToPass, bool manualCheck, string userId)
+		public Test(string title, string startAt, string endAt,bool isActive, decimal scoreToPass, 
+			bool manualCheck, string userId, string messageAboutPassing, string failureMessage)
 		{
 			Title = title;
 			StartAt = startAt;
@@ -35,6 +35,8 @@ namespace ConstructorForTests.Models
 			ScoreToPass = scoreToPass;
 			ManualCheck = manualCheck;
 			UserId = userId;
+			MessageAboutPassing = messageAboutPassing;
+			FailureMessage = failureMessage;
 		}
 	}
 }
