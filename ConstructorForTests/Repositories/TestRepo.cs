@@ -10,11 +10,9 @@ namespace ConstructorForTests.Repositories
 	public class TestRepo : ITestRepo
 	{
 		private readonly AppDbContext _context;
-		private readonly IEmailSender _sender;
 		private readonly ITestHandler _testHandler;
-		public TestRepo(AppDbContext context, IEmailSender sender, ITestHandler testHandler)
+		public TestRepo(AppDbContext context, ITestHandler testHandler)
 		{
-			_sender = sender;
 			_context = context;
 			_testHandler = testHandler;
 		}
@@ -49,6 +47,7 @@ namespace ConstructorForTests.Repositories
 			return await _context.Tests.ToListAsync();
 		}
 
+		//Переделать, думаю лучше сделать отдельный эндпоинт для руководителя для доступа к тесту, а здесь убрать ISession
 		public async Task<GetTestDTO?> GetTestById(Guid id, ISession session)
 		{
 			

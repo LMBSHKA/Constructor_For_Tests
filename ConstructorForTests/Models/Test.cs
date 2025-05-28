@@ -20,6 +20,8 @@ namespace ConstructorForTests.Models
 		public decimal ScoreToPass { get; set; } = decimal.Zero;
 		[Required]
 		public bool ManualCheck { get; set; } = false;
+		//public string MessageAboutPassing { get; set; } = null;
+		//public string FailureMessage { get; set; } = null;
 
 		public Test() { }
 

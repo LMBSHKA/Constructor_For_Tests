@@ -13,12 +13,12 @@ namespace ConstructorForTests.Handlers
 
 				if (!string.IsNullOrEmpty(question.AnswerOptions))
 				{
-					questionDto = new QuestionWithOptionsDto(question, question.AnswerOptions.Split(' '));
+					questionDto = new QuestionWithOptionsDto(question, new AllAnswerDto(question.AnswerOptions.Split(' ')));
 				}
 
 				else if (!string.IsNullOrEmpty(question.PairKey) && !string.IsNullOrEmpty(question.PairValue))
 				{
-					questionDto = new QuestionWithPairDto(question, question.PairKey.Split(' '), question.PairValue.Split(' '));
+					questionDto = new QuestionWithPairDto(question, new AllAnswerDto(question.PairKey.Split(' '), question.PairValue.Split(' ')));
 				}
 
 				else
