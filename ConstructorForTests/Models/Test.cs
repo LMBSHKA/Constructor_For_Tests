@@ -24,11 +24,12 @@ namespace ConstructorForTests.Models
 		public string MessageAboutPassing { get; set; } = null;
 		[Required]
 		public string FailureMessage { get; set; } = null;
+		public string? TimerInSeconds { get; set; } = null;
 
 		public Test() { }
 
 		public Test(string title, string startAt, string endAt,bool isActive, decimal scoreToPass, 
-			bool manualCheck, string userId, string messageAboutPassing, string failureMessage)
+			bool manualCheck, string userId, string messageAboutPassing, string failureMessage, string timerInSeconds)
 		{
 			Title = title;
 			StartAt = startAt;
@@ -39,6 +40,7 @@ namespace ConstructorForTests.Models
 			UserId = userId;
 			MessageAboutPassing = messageAboutPassing;
 			FailureMessage = failureMessage;
+			TimerInSeconds = timerInSeconds;
 		}
 	}
 }

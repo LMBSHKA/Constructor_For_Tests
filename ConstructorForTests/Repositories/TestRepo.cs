@@ -79,7 +79,7 @@ namespace ConstructorForTests.Repositories
 		{
 			try
 			{
-				if (createTestData.Title == "null")
+				if (createTestData.Title == null)
 					return false;
 
 				var newTest = new Test(
@@ -91,7 +91,8 @@ namespace ConstructorForTests.Repositories
 					false,
 					session.GetString("CuratorId")!,
 					createTestData.MessageAboutPassing,
-					createTestData.FailureMessage
+					createTestData.FailureMessage,
+					createTestData.TimerInSeconds
 					);
 
 				await _context.Tests.AddAsync(newTest);

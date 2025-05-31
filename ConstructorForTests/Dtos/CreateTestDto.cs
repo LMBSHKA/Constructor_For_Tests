@@ -6,13 +6,14 @@ namespace ConstructorForTests.Dtos
 {
 	public class CreateTestDto
 	{
-		public string Title { get; set; } = "null";
+		public string? Title { get; set; } = null;
 		public DateTime StartAt { get; set; } = DateTime.MinValue;
 		public DateTime EndAt { get; set; } = DateTime.MinValue;
 		public bool IsActive { get; set; } = false;
 		public decimal ScoreToPass { get; set; } = decimal.Zero;
 		public string? MessageAboutPassing { get; set; } = null;
 		public string? FailureMessage { get; set; } = null;
+		public string? TimerInSeconds { get; set; } = null;
 		public List<CreateQuestionDTO>? Questions { get; set; }
 	}
 }

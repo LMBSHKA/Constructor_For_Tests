@@ -19,6 +19,7 @@ namespace ConstructorForTests.Dtos
 			ScoreToPass = test.ScoreToPass;
 			ManualCheck = test.ManualCheck;
 			Questions = questions;
+			TimerInSeconds = test.TimerInSeconds;
 		}
 	}
 }
