@@ -7,8 +7,7 @@ namespace ConstructorForTests.UserSolutionHandler
 {
 	public class SolutionHandler : ISolutionHandler
 	{
-		public async Task<decimal> CheckMultipleAnswer(Answer correctAnswer, UserAnswersDto userAnswer,
-			List<Question> questions, List<string> correctMultipleAnswer)
+		public async Task<decimal> CheckMultipleAnswer(UserAnswersDto userAnswer, List<string> correctMultipleAnswer)
 		{
 			decimal score = 0;
 
@@ -31,8 +30,7 @@ namespace ConstructorForTests.UserSolutionHandler
 			return score;
 		}
 
-		public async Task<decimal> CheckPairAnswer(Answer correctAnswer, UserAnswersDto userAnswer,
-			List<Question> questions, List<MatchingPair> correctPairsAnswer)
+		public async Task<decimal> CheckPairAnswer(UserAnswersDto userAnswer, List<MatchingPair> correctPairsAnswer)
 		{
 			decimal score = 0;
 

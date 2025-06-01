@@ -38,7 +38,7 @@ namespace ConstructorForTests.Repositories
 
 			foreach (var userAnswer in userSolution.Answers)
 			{
-				score += await CheckAnswer(correctAnswers, questions, userAnswer);
+				score += await CheckAnswer(correctAnswers, userAnswer);
 			}
 
 			var isPassed = await CreateTestResult(test, userId, score);
@@ -82,8 +82,7 @@ namespace ConstructorForTests.Repositories
 				return false;
 		}
 
-		//Сделать рефакторинг убрать ненужные передачи данных в хэндлеры (correctAnswer, questions)
-		private async Task<decimal> CheckAnswer(List<Answer> correctAnswers, List<Question> questions, UserAnswersDto userAnswer)
+		private async Task<decimal> CheckAnswer(List<Answer> correctAnswers, UserAnswersDto userAnswer)
 		{
 			var correctAnswer = correctAnswers.FirstOrDefault(x => x.QuestionId == userAnswer.QuestionId);
 			if (correctAnswer != null)
@@ -103,7 +102,7 @@ namespace ConstructorForTests.Repositories
 						.Select(x => x.Answer)
 						.ToListAsync();
 
-					return await _solutionHandler.CheckMultipleAnswer(correctAnswer, userAnswer, questions, correctMultipleAnswer);
+					return await _solutionHandler.CheckMultipleAnswer(userAnswer, correctMultipleAnswer);
 				}
 
 				else if (correctAnswer.PairId != Guid.Empty)
@@ -112,7 +111,7 @@ namespace ConstructorForTests.Repositories
 						.Where(x => x.PairId == correctAnswer.PairId)
 						.ToListAsync();
 
-					return await _solutionHandler.CheckPairAnswer(correctAnswer, userAnswer, questions, correctPairsAnswer);
+					return await _solutionHandler.CheckPairAnswer(userAnswer, correctPairsAnswer);
 				}
 			}
 

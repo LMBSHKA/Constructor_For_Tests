@@ -136,8 +136,8 @@ namespace ConstructorForTests.Controllers
 		[HttpPost("CreateTest")]
 		public async Task<IActionResult> CreateTest([FromBody] CreateTestDto createTestData)
 		{
-			
-			if (await _testRepo.CreateTest(createTestData, HttpContext.Session))
+			var curatorId = HttpContext.Session.GetString("CuratorId");
+			if (await _testRepo.CreateTest(createTestData, curatorId))
 				return Ok();
 
 			return BadRequest("Something went wrong");

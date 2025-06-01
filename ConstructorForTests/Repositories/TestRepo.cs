@@ -72,8 +72,7 @@ namespace ConstructorForTests.Repositories
 			return questions;
 		}
 
-		//Исправить лучше передавать id сразу а не ISession
-		public async Task<bool> CreateTest(CreateTestDto createTestData, ISession session)
+		public async Task<bool> CreateTest(CreateTestDto createTestData, string curatorId)
 		{
 			try
 			{
@@ -91,9 +90,9 @@ namespace ConstructorForTests.Repositories
 					isActive,
 					createTestData.ScoreToPass,
 					false,
-					session.GetString("CuratorId")!,
-					createTestData.MessageAboutPassing,
-					createTestData.FailureMessage,
+					curatorId!,
+					createTestData.MessageAboutPassing!,
+					createTestData.FailureMessage!,
 					createTestData.TimerInSeconds.ToString()
 					);
 
