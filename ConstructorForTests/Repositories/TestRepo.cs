@@ -11,6 +11,7 @@ namespace ConstructorForTests.Repositories
 	{
 		private readonly AppDbContext _context;
 		private readonly ITestHandler _testHandler;
+
 		public TestRepo(AppDbContext context, ITestHandler testHandler)
 		{
 			_context = context;
@@ -47,8 +48,7 @@ namespace ConstructorForTests.Repositories
 			return await _context.Tests.ToListAsync();
 		}
 
-		//Переделать, думаю лучше сделать отдельный эндпоинт для руководителя для доступа к тесту, а здесь убрать ISession
-		public async Task<GetTestDTO?> GetTestById(Guid id, ISession session)
+		public async Task<Test?> GetTestInfoById(Guid id)
 		{
 			
 			if (id == Guid.Empty)
@@ -59,19 +59,17 @@ namespace ConstructorForTests.Repositories
 			if (test == null)
 				return null;
 
-			if (test.IsActive == false && session.GetString("CuratorId") == null)
-				return null;
+			return test;
+		}
 
+		public async Task<List<Question>> GetTestQuestion(Guid testId)
+		{
 			var questions = await _context.Questions
-				.Where(x => x.TestId == id)
+				.Where(x => x.TestId == testId)
 				.OrderBy(x => x.Order)
 				.ToListAsync();
 
-			var listGetQuestions = new List<BaseQuestionDto>();
-
-			_testHandler.GetTestById(listGetQuestions, questions);
-
-			return new GetTestDTO(test, listGetQuestions);
+			return questions;
 		}
 
 		//Исправить лучше передавать id сразу а не ISession
@@ -86,7 +84,7 @@ namespace ConstructorForTests.Repositories
 					createTestData.Title,
 					createTestData.StartAt.ToString("dd.MM.yyyy"),
 					createTestData.EndAt.ToString("dd.MM.yyyy"),
-					true,
+					false,
 					createTestData.ScoreToPass,
 					false,
 					session.GetString("CuratorId")!,

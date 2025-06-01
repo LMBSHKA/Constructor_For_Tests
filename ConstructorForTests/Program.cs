@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using Quartz;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using ConstructorForTests.Services;
 
 internal class Program
 {
@@ -46,6 +47,7 @@ internal class Program
 		builder.Services.AddScoped<ISolutionHandler, SolutionHandler>();
 		builder.Services.AddScoped<IEmailSender, EmailSender>();
 		builder.Services.AddScoped<ITestHandler, TestHandler>();
+		builder.Services.AddScoped<ITestService, TestService>();
 
 		//Connect Db
 		//builder.Services.AddDbContext<AppDbContext>(opt =>

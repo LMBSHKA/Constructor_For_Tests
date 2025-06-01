@@ -2,6 +2,7 @@
 using ConstructorForTests.Filters;
 using ConstructorForTests.Models;
 using ConstructorForTests.Repositories;
+using ConstructorForTests.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
@@ -15,9 +16,11 @@ namespace ConstructorForTests.Controllers
 	public class TestController : ControllerBase
 	{
 		private readonly ITestRepo _testRepo;
+		private readonly ITestService _testService;
 
-		public TestController(ITestRepo testRepo)
+		public TestController(ITestRepo testRepo, ITestService testService)
 		{
+			_testService = testService;
 			_testRepo = testRepo;
 		}
 
@@ -46,10 +49,15 @@ namespace ConstructorForTests.Controllers
 		/// <response code="200">Успешное выполнение</response>
 		/// <response code="404">Тест не найден</response>
 		/// <response code="500">Ошибка сервера</response>
-		[HttpGet("GetTest/{id}")]
+		[HttpGet("UserGetTest/{id}")]
 		public async Task<IActionResult> UserGetTestById(Guid id)
 		{
-			var test = await _testRepo.GetTestById(id, HttpContext.Session);
+			GetTestDTO? test;
+			if (HttpContext.Session.GetString("CuratorId") == null)
+				test = await _testService.GetTest(id, false);
+
+			else
+				test = await _testService.GetTest(id, true);
 
 			if (test == null)
 				return NotFound();
@@ -60,9 +68,7 @@ namespace ConstructorForTests.Controllers
 			else
 			{
 				var startTimer = HttpContext.Session.GetString("StartTime");
-				var passedTime = TimeSpan.Parse(DateTime.Now.ToLongTimeString()).Subtract(TimeSpan.Parse(startTimer!));
-				var convertedTimer = TimeSpan.FromSeconds(Convert.ToDouble(test.TimerInSeconds));
-				var remainingTime = convertedTimer.Subtract(passedTime).ToString();
+				var remainingTime = _testService.CalculateTimer(test.TimerInSeconds!, startTimer!);
 				HttpContext.Response.Headers.Add(new KeyValuePair<string, StringValues>("Remaining-Time", remainingTime));
 			}
 
