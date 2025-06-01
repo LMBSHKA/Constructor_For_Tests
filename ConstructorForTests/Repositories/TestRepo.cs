@@ -80,11 +80,15 @@ namespace ConstructorForTests.Repositories
 				if (createTestData.Title == null)
 					return false;
 
+				var isActive = false;
+				if (createTestData.StartAt <= DateTime.Now)
+					isActive = true;
+
 				var newTest = new Test(
 					createTestData.Title,
 					createTestData.StartAt.ToString("dd.MM.yyyy"),
 					createTestData.EndAt.ToString("dd.MM.yyyy"),
-					false,
+					isActive,
 					createTestData.ScoreToPass,
 					false,
 					session.GetString("CuratorId")!,

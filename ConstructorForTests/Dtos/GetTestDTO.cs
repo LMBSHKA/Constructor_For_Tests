@@ -8,6 +8,7 @@ namespace ConstructorForTests.Dtos
 		public List<BaseQuestionDto> Questions { get; set; }
 
 		public GetTestDTO() { }
+		public bool IsActive { get; set; }
 		public bool ManualCheck { get; set; }
 
 		public GetTestDTO(Test test, List<BaseQuestionDto> questions)
