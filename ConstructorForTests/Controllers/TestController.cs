@@ -45,13 +45,13 @@ namespace ConstructorForTests.Controllers
 		/// Получение теста по его идентификатору
 		/// Если отправит запрос куратор, то ему вернется тест, даже если он не активен
 		/// </summary>
-		/// <returns>Возвращает тест и в header оставшееся время ("Remaining-Time")</returns>
+		/// <returns></returns>
 		/// <param name="id">Указывать id теста</param>
-		/// <response code="200">Успешное выполнение</response>
+		/// <response code="200" header="Remaining-Time">Успешное выполнение</response>
 		/// <response code="404">Тест не найден</response>
 		/// <response code="500">Ошибка сервера</response>
 		[HttpGet("UserGetTest/{id}")]
-		public async Task<IActionResult> UserGetTestById(Guid id)
+		public async Task<IActionResult> GetTestById(Guid id)
 		{
 			GetTestDTO? test;
 			if (HttpContext.Session.GetString("CuratorId") == null)
@@ -64,7 +64,11 @@ namespace ConstructorForTests.Controllers
 				return NotFound();
 
 			if (HttpContext.Session.GetString("StartTime") == null)
+			{
+				var convertedTimer = TimeSpan.FromSeconds(Convert.ToDouble(test.TimerInSeconds));
+				HttpContext.Response.Headers.Add(new KeyValuePair<string, StringValues>("Remaining-Time", convertedTimer.ToString()));
 				HttpContext.Session.SetString("StartTime", DateTime.Now.ToLongTimeString());
+			}
 
 			else
 			{
@@ -98,9 +102,9 @@ namespace ConstructorForTests.Controllers
 		///          "startAt": "2025-05-23",
 		///          "endAt": "2025-05-26",
 		///          "scoreToPass": 1,
-		///            "messageAboutPassing": "string",
-		///            "failureMessage": "string",
-		///            "timerInSeconds": 120,
+		///          "messageAboutPassing": "string",
+		///          "failureMessage": "string",
+		///          "timerInSeconds": 120,
 		///          "questions": 
 		///          [
 		///              {

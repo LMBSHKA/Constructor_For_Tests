@@ -32,7 +32,7 @@ namespace ConstructorForTests.Services
 			return new GetTestDTO(test, listGetQuestions);
 		}
 
-		public string CalculateTimer(string timerInSeconds, string startTimer)
+		public string CalculateTimer(int timerInSeconds, string startTimer)
 		{
 			var passedTime = TimeSpan.Parse(DateTime.Now.ToLongTimeString()).Subtract(TimeSpan.Parse(startTimer!));
 			var convertedTimer = TimeSpan.FromSeconds(Convert.ToDouble(timerInSeconds));
