@@ -5,6 +5,7 @@ namespace ConstructorForTests.Dtos
 {
 	public class GetTestDTO : CreateTestDto
 	{
+		public string TimerInSeconds { get; set; }
 		public List<BaseQuestionDto> Questions { get; set; }
 
 		public GetTestDTO() { }

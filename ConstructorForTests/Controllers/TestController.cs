@@ -43,8 +43,9 @@ namespace ConstructorForTests.Controllers
 
 		/// <summary>
 		/// Получение теста по его идентификатору
+		/// Если отправит запрос куратор, то ему вернется тест, даже если он не активен
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>Возвращает тест и в header оставшееся время ("Remaining-Time")</returns>
 		/// <param name="id">Указывать id теста</param>
 		/// <response code="200">Успешное выполнение</response>
 		/// <response code="404">Тест не найден</response>
@@ -97,6 +98,9 @@ namespace ConstructorForTests.Controllers
 		///          "startAt": "2025-05-23",
 		///          "endAt": "2025-05-26",
 		///          "scoreToPass": 1,
+		///            "messageAboutPassing": "string",
+		///            "failureMessage": "string",
+		///            "timerInSeconds": 120,
 		///          "questions": 
 		///          [
 		///              {

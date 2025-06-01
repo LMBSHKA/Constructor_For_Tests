@@ -50,13 +50,13 @@ internal class Program
 		builder.Services.AddScoped<ITestService, TestService>();
 
 		//Connect Db
-		//builder.Services.AddDbContext<AppDbContext>(opt =>
-		//{
-		//	opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+		builder.Services.AddDbContext<AppDbContext>(opt =>
+		{
+			opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 
-		//},
-		//ServiceLifetime.Scoped);
-		builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMemoryDb"));
+		},
+		ServiceLifetime.Scoped);
+		//builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("InMemoryDb"));
 		builder.Services.AddDistributedMemoryCache();
 
 		//Add Sesion options

@@ -13,7 +13,7 @@ namespace ConstructorForTests.Dtos
 		public decimal ScoreToPass { get; set; } = decimal.Zero;
 		public string? MessageAboutPassing { get; set; } = null;
 		public string? FailureMessage { get; set; } = null;
-		public string? TimerInSeconds { get; set; } = null;
+		public int TimerInSeconds { get; set; }
 		public List<CreateQuestionDTO>? Questions { get; set; }
 	}
 }

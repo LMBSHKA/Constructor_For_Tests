@@ -90,7 +90,7 @@ namespace ConstructorForTests.Repositories
 					session.GetString("CuratorId")!,
 					createTestData.MessageAboutPassing,
 					createTestData.FailureMessage,
-					createTestData.TimerInSeconds
+					createTestData.TimerInSeconds.ToString()
 					);
 
 				await _context.Tests.AddAsync(newTest);
