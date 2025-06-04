@@ -1,5 +1,6 @@
 ﻿using ConstructorForTests.Dtos;
 using ConstructorForTests.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConstructorForTests.Handlers
 {
@@ -27,6 +28,24 @@ namespace ConstructorForTests.Handlers
 				}
 
 				listGetQuestions.Add(questionDto);
+			}
+		}
+
+		public void CreateStatisticDto(StatisticFilterDto statisticFilter, List<StatisticDto> statistics,
+			User user, Test test, TestResult testResult)
+		{
+			var fullName = string.Join(' ', [user.SecondName, user.FirstName, user.Patronymic]);
+
+			if (statisticFilter.FullName != null && statisticFilter.FullName.Equals(fullName) || statisticFilter.FullName == "")
+			{
+				var statistic = new StatisticDto(
+					string.Join(' ', [user.FirstName, user.SecondName, user.Patronymic]),
+					user.Email,
+					test.Title,
+					testResult.IsPassed,
+					testResult.TotalScore);
+
+				statistics.Add(statistic);
 			}
 		}
 	}

@@ -4,6 +4,7 @@ using ConstructorForTests.Dtos;
 using ConstructorForTests.Handlers;
 using ConstructorForTests.Models;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ConstructorForTests.Repositories
 {
@@ -11,6 +12,7 @@ namespace ConstructorForTests.Repositories
 	{
 		private readonly AppDbContext _context;
 		private readonly ITestHandler _testHandler;
+		private int PageSize { get; } = 20;
 
 		public TestRepo(AppDbContext context, ITestHandler testHandler)
 		{
@@ -18,29 +20,53 @@ namespace ConstructorForTests.Repositories
 			_testHandler = testHandler;
 		}
 
-		public async Task<List<StatisticDto>> GetStatistic()
+		public async Task<List<StatisticDto>> GetStatistic(StatisticFilterDto statisticFilter, int pageNumber)
 		{
 			var statistics = new List<StatisticDto>();
-			var listTestResults = await _context.TestResults.ToListAsync();
-			
-			foreach (var testResult in listTestResults)
+			var listTestResults = GetTestResWithFilter(statisticFilter);
+
+			var pagedItems = await SetPagination(pageNumber, listTestResults);
+
+			foreach (var testResult in pagedItems)
 			{
-				var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == testResult.UserId);
-				var test = await _context.Tests.FirstOrDefaultAsync(x => x.Id == testResult.TestId);
+				var user = await _context.Users
+					.FirstOrDefaultAsync(x =>
+					x.Id == testResult.UserId && 
+					EF.Functions.Like(x.Email, $"%{statisticFilter.Email}%"));
+
+				var test = await _context.Tests
+					.FirstOrDefaultAsync(x => 
+					x.Id == testResult.TestId &&
+					EF.Functions.Like(x.Title, $"%{statisticFilter.TestName}%"));
+
 				if (user != null && test != null)
 				{
-					var statistic = new StatisticDto(
-						string.Join(' ', [user.FirstName, user.SecondName, user.Patronymic]),
-						user.Email,
-						test.Title,
-						testResult.IsPassed,
-						testResult.TotalScore);
-
-					statistics.Add(statistic);
+					_testHandler.CreateStatisticDto(statisticFilter, statistics, user, test, testResult);
 				}
 			}
 
 			return statistics;
+		}
+
+		private async Task<TestResult[]> SetPagination(int pageNumber, IQueryable<TestResult> listTestResults)
+		{
+			var startIndex = (pageNumber - 1) * PageSize;
+			var pagedItems = await listTestResults
+				.Skip(startIndex)
+				.Take(PageSize)
+				.ToArrayAsync();
+
+			return pagedItems;
+		}
+
+		private IQueryable<TestResult> GetTestResWithFilter(StatisticFilterDto statisticFilter)
+		{
+			var listTestResults = _context.TestResults
+				.Where(stat =>
+				EF.Functions.Like(stat.IsPassed.ToString(), $"%{statisticFilter.Result}%") &
+				EF.Functions.Like(stat.TotalScore.ToString(), $"%{(statisticFilter.Score == -1 ? "" : statisticFilter.Score)}%"));
+
+			return listTestResults;
 		}
 
 		public async Task<List<Test>> GetAllTests()

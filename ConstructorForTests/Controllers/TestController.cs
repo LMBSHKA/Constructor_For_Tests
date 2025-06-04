@@ -173,9 +173,10 @@ namespace ConstructorForTests.Controllers
 		/// <response code="500">Ошибка сервера</response>
 		[SessionAuthentication]
 		[HttpGet("GetStatistic")]
-		public async Task<IActionResult> GetStatistic()
+		public async Task<IActionResult> GetStatistic([FromQuery] StatisticFilterDto statisticFilter, 
+			[FromQuery] int pageNumber = 1)
 		{
-			return Ok(await _testRepo.GetStatistic());
+			return Ok(await _testRepo.GetStatistic(statisticFilter, pageNumber));
 		}
 	}
 }
