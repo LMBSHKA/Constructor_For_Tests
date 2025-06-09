@@ -154,9 +154,14 @@ namespace ConstructorForTests.Controllers
 		/// <response code="500">Ошибка сервера</response>
 		[SessionAuthentication]
 		[HttpPut("Update/{id}")]
-		public async Task<IActionResult> UpdateTest(Guid id, [FromBody] Test updateTestData)
+		public async Task<IActionResult> UpdateTest(Guid id, [FromBody] CreateTestDto createTestDto)
 		{
-			if (await _testRepo.UpdateTest(id, updateTestData))
+			var code = await _testRepo.DeleteTest(id);
+			if (code == 404)
+				return NotFound();
+
+			var curatorId = HttpContext.Session.GetString("CuratorId");
+			if (await _testRepo.CreateTest(createTestDto, curatorId))
 				return Ok();
 
 			return BadRequest("Something went wrong");
