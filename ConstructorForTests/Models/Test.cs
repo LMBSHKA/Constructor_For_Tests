@@ -25,6 +25,7 @@ namespace ConstructorForTests.Models
 		[Required]
 		public string FailureMessage { get; set; } = null;
 		public string? TimerInSeconds { get; set; } = null;
+		public bool IsDelete { get; set; } = false;
 
 		public Test() { }
 

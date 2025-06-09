@@ -15,7 +15,7 @@ namespace ConstructorForTests.Quartz
 
 		public async Task Execute(IJobExecutionContext context)
 		{
-			var allTests = await _testRepo.GetAllTests();
+			var allTests = _testRepo.GetAllTests();
 
 			foreach (var test in allTests)
 			{

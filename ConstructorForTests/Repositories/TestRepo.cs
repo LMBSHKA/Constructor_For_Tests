@@ -1,10 +1,9 @@
-﻿using ConstructorForTests.API;
+﻿using Azure;
 using ConstructorForTests.Database;
 using ConstructorForTests.Dtos;
 using ConstructorForTests.Handlers;
 using ConstructorForTests.Models;
 using Microsoft.EntityFrameworkCore;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ConstructorForTests.Repositories
 {
@@ -29,19 +28,23 @@ namespace ConstructorForTests.Repositories
 
 			foreach (var testResult in pagedItems)
 			{
-				var user = await _context.Users
-					.FirstOrDefaultAsync(x =>
-					x.Id == testResult.UserId && 
-					EF.Functions.Like(x.Email, $"%{statisticFilter.Email}%"));
-
 				var test = await _context.Tests
-					.FirstOrDefaultAsync(x => 
+					.FirstOrDefaultAsync(x =>
 					x.Id == testResult.TestId &&
+					x.IsDelete == false &&
 					EF.Functions.Like(x.Title, $"%{statisticFilter.TestName}%"));
 
-				if (user != null && test != null)
+				if (test != null)
 				{
-					_testHandler.CreateStatisticDto(statisticFilter, statistics, user, test, testResult);
+					var user = await _context.Users
+						.FirstOrDefaultAsync(x =>
+						x.Id == testResult.UserId &&
+						EF.Functions.Like(x.Email, $"%{statisticFilter.Email}%"));
+
+					if (user != null)
+					{
+						_testHandler.CreateStatisticDto(statisticFilter, statistics, user, test, testResult);
+					}
 				}
 			}
 
@@ -69,18 +72,18 @@ namespace ConstructorForTests.Repositories
 			return listTestResults;
 		}
 
-		public async Task<List<Test>> GetAllTests()
+		public IQueryable<Test> GetAllTests()
 		{
-			return await _context.Tests.ToListAsync();
+			return _context.Tests.Where(x => x.IsDelete == false);
 		}
 
 		public async Task<Test?> GetTestInfoById(Guid id)
 		{
-			
+
 			if (id == Guid.Empty)
 				return null;
 
-			var test = await _context.Tests.FirstOrDefaultAsync(t => t.Id == id);
+			var test = await _context.Tests.FirstOrDefaultAsync(t => t.Id == id && t.IsDelete == false);
 
 			if (test == null)
 				return null;
@@ -141,7 +144,7 @@ namespace ConstructorForTests.Repositories
 			var order = 1;
 			foreach (var question in questions)
 			{
-				var newQuestion = new Question(testId, question.QuestionText, question.Type, 1, 
+				var newQuestion = new Question(testId, question.QuestionText, question.Type, 1,
 					order, question.AnswerOptions, question.PairKey, question.PairValue);
 				await _context.Questions.AddAsync(newQuestion);
 				if (question.Type == QuestionType.DetailedAnswer)
@@ -153,7 +156,7 @@ namespace ConstructorForTests.Repositories
 				order++;
 			}
 		}
-		
+
 		private async Task AddAnswer(Guid questionId, AnswerDTO answer, Guid testId)
 		{
 			if (!string.IsNullOrEmpty(answer.TextAnswer))
@@ -219,6 +222,22 @@ namespace ConstructorForTests.Repositories
 			{
 				return false;
 			}
+		}
+
+		public async Task<int> DeleteTest(Guid testId)
+		{
+			var test = await _context.Tests.FirstOrDefaultAsync(x => x.Id == testId);
+
+			if (test != null)
+			{
+				test.IsDelete = true;
+				_context.Update(test);
+				await _context.SaveChangesAsync();
+
+				return StatusCodes.Status200OK;
+			}
+
+			return StatusCodes.Status404NotFound;
 		}
 	}
 }

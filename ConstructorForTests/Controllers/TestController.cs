@@ -36,8 +36,8 @@ namespace ConstructorForTests.Controllers
 		public async Task<IActionResult> GetAllTests()
 		{
 			Console.WriteLine(HttpContext.Session.GetString("Time"));
-			var listTests = await _testRepo.GetAllTests();
-			var testsByUserId = listTests.Where(x => x.UserId == HttpContext.Session.GetString("CuratorId"));
+			var allTests = _testRepo.GetAllTests();
+			var testsByUserId = allTests.Where(x => x.UserId == HttpContext.Session.GetString("CuratorId"));
 			return Ok(testsByUserId);
 		}
 
@@ -177,6 +177,16 @@ namespace ConstructorForTests.Controllers
 			[FromQuery] int pageNumber = 1)
 		{
 			return Ok(await _testRepo.GetStatistic(statisticFilter, pageNumber));
+		}
+
+		[HttpDelete("Delete/{testId}")]
+		public async Task<IActionResult> DeleteTest(Guid testId)
+		{
+			var status = await _testRepo.DeleteTest(testId);
+			if (status == 404)
+				return NotFound();
+
+			return Ok();
 		}
 	}
 }
