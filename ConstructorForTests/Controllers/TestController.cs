@@ -193,5 +193,15 @@ namespace ConstructorForTests.Controllers
 
 			return Ok();
 		}
+
+		[HttpPost("ManualCheck/{testId}")]
+		public async Task<IActionResult> SetManualCheck(Guid testId, List<ManualCheckDto> manualCheckData)
+		{
+			var status = await _testRepo.UpdateResult(testId, manualCheckData);
+			if (status == 404)
+				return NotFound();
+
+			return Ok();
+		}
 	}
 }

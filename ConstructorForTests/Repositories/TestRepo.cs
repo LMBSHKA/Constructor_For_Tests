@@ -1,9 +1,12 @@
 ﻿using Azure;
+using ConstructorForTests.API;
 using ConstructorForTests.Database;
 using ConstructorForTests.Dtos;
 using ConstructorForTests.Handlers;
 using ConstructorForTests.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ConstructorForTests.Repositories
 {
@@ -11,12 +14,16 @@ namespace ConstructorForTests.Repositories
 	{
 		private readonly AppDbContext _context;
 		private readonly ITestHandler _testHandler;
+		private readonly IUserRepo _userRepo;
+		private readonly IEmailSender _emailSender;
 		private int PageSize { get; } = 20;
 
-		public TestRepo(AppDbContext context, ITestHandler testHandler)
+		public TestRepo(AppDbContext context, ITestHandler testHandler, IUserRepo userRepo, IEmailSender emailSender)
 		{
+			_emailSender = emailSender;
 			_context = context;
 			_testHandler = testHandler;
+			_userRepo = userRepo;
 		}
 
 		public async Task<List<StatisticDto>> GetStatistic(StatisticFilterDto statisticFilter, int pageNumber)
@@ -238,6 +245,47 @@ namespace ConstructorForTests.Repositories
 			}
 
 			return StatusCodes.Status404NotFound;
+		}
+
+		public async Task<int> UpdateResult(Guid testId, List<ManualCheckDto> manualCheckData)
+		{
+			var test = await GetTestInfoById(testId);
+			if (test == null)
+				return StatusCodes.Status404NotFound;
+
+			foreach (var userMarks in manualCheckData)
+			{
+				var userId = userMarks.UserId;
+				var user = await _context.Users
+					.FirstOrDefaultAsync(x => x.Id == userId);
+				var usersTestResult = await _context.TestResults
+					.FirstOrDefaultAsync(x => x.UserId == userId && x.TestId == testId);
+				if (user == null || usersTestResult == null)
+					return StatusCodes.Status404NotFound;
+
+				var markSum = 0;
+
+				foreach (var markedQuestion in userMarks.MarkedQuestions)
+					markSum += markedQuestion.Mark;
+
+				usersTestResult.TotalScore += markSum;
+				_context.Update(usersTestResult);
+				await _context.SaveChangesAsync();
+
+				await CheckPassage(test, usersTestResult, user);
+			}
+
+			return StatusCodes.Status200OK;
+		}
+
+		private async Task CheckPassage(Test test, TestResult usersTestResult, User user)
+		{
+			if (_userRepo.CheckPassage(test, usersTestResult.TotalScore))
+			{
+				await _emailSender.SendEmail(user.Email!, usersTestResult.TotalScore, test.MessageAboutPassing);
+			}
+
+			await _emailSender.SendEmail(user.Email!, usersTestResult.TotalScore, test.FailureMessage);
 		}
 	}
 }

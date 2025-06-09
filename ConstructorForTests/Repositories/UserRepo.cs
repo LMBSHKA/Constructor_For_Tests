@@ -73,7 +73,7 @@ namespace ConstructorForTests.Repositories
 			return isPassed;
 		}
 
-		private bool CheckPassage(Test test, decimal score)
+		public bool CheckPassage(Test test, decimal score)
 		{
 			if (test.ScoreToPass <= score)
 				return true;
