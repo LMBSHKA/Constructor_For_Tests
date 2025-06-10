@@ -48,5 +48,26 @@ namespace ConstructorForTests.Handlers
 				statistics.Add(statistic);
 			}
 		}
+
+		public void CreateListToSend(List<SendTestToCheckDto> listTestToSend, 
+			IQueryable<UserAnswer> userAnswers, Question question)
+		{
+			foreach (var userAnswer in userAnswers)
+			{
+				var testToCheck = listTestToSend.FirstOrDefault(x => x.Userid == userAnswer.UserId);
+				if (testToCheck == null)
+				{
+					var sendToCheck = new SendTestToCheckDto(userAnswer.UserId,
+						[new QuestionToCheckDto(question.Id, question.QuestionText, userAnswer.Text)]);
+					listTestToSend.Add(sendToCheck);
+				}
+				else
+				{
+					testToCheck.QuestionToCheckDtos.Add(new QuestionToCheckDto(question.Id,
+						question.QuestionText, userAnswer.Text));
+				}
+			}
+
+		}
 	}
 }

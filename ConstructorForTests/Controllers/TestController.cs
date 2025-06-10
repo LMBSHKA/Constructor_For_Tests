@@ -144,9 +144,9 @@ namespace ConstructorForTests.Controllers
 		}
 
 		/// <summary>
-		/// Неготово(Еще будет доделываться)
 		/// Обновление данных теста
 		/// Только авторизованные пользователи
+		/// Передавать то же самое, что и при создании теста
 		/// </summary>
 		/// <returns></returns>
 		/// <response code="200">Успешное выполнение</response>
@@ -194,6 +194,14 @@ namespace ConstructorForTests.Controllers
 			return Ok();
 		}
 
+		/// <summary>
+		/// Принятие результатов ручной проверки
+		/// Только авторизованные пользователи
+		/// </summary>
+		/// <returns></returns>
+		/// <response code="200">Успешное выполнение</response>
+		/// <response code="400">Ошибка API(Переданы некорретные данные)</response>
+		/// <response code="500">Ошибка сервера</response>
 		[HttpPost("ManualCheck/{testId}")]
 		public async Task<IActionResult> SetManualCheck(Guid testId, List<ManualCheckDto> manualCheckData)
 		{
@@ -204,6 +212,14 @@ namespace ConstructorForTests.Controllers
 			return Ok();
 		}
 
+		/// <summary>
+		/// Получение всеех пользователей и их ответов в тесте для ручной проверки
+		/// Только авторизованные пользователи
+		/// </summary>
+		/// <returns></returns>
+		/// <response code="200">Успешное выполнение</response>
+		/// <response code="400">Ошибка API(Переданы некорретные данные)</response>
+		/// <response code="500">Ошибка сервера</response>
 		[HttpGet("ManualCheck/{testId}")]
 		public async Task<IActionResult> GetTestToCheck(Guid testId)
 		{
