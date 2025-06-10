@@ -65,8 +65,8 @@ namespace ConstructorForTests.Controllers
 
 			if (HttpContext.Session.GetString("StartTime") == null)
 			{
-				var convertedTimer = TimeSpan.FromSeconds(Convert.ToDouble(test.TimerInSeconds));
-				HttpContext.Response.Headers.Add(new KeyValuePair<string, StringValues>("Remaining-Time", convertedTimer.ToString()));
+				HttpContext.Response.Headers
+					.Add(new KeyValuePair<string, StringValues>("Remaining-Time", test.TimerInSeconds.ToString()));
 				HttpContext.Session.SetString("StartTime", DateTime.Now.ToLongTimeString());
 			}
 

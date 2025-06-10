@@ -37,8 +37,9 @@ namespace ConstructorForTests.Services
 			var passedTime = TimeSpan.Parse(DateTime.Now.ToLongTimeString()).Subtract(TimeSpan.Parse(startTimer!));
 			var convertedTimer = TimeSpan.FromSeconds(Convert.ToDouble(timerInSeconds));
 			var remainingTime = convertedTimer.Subtract(passedTime).ToString();
+			var remainingTimeSeconds = TimeSpan.Parse(remainingTime).TotalSeconds.ToString();
 
-			return remainingTime;
+			return remainingTimeSeconds;
 		}
 	}
 }
