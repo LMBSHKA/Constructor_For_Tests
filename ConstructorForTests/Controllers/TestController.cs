@@ -184,6 +184,15 @@ namespace ConstructorForTests.Controllers
 			return Ok(await _testRepo.GetStatistic(statisticFilter, pageNumber));
 		}
 
+		/// <summary>
+		/// Удаление теста
+		/// Только авторизованные пользователи
+		/// </summary>
+		/// <returns></returns>
+		/// <response code="200">Успешное выполнение</response>
+		/// <response code="400">Ошибка API(Переданы некорретные данные)</response>
+		/// <response code="500">Ошибка сервера</response>
+		[SessionAuthentication]
 		[HttpDelete("Delete/{testId}")]
 		public async Task<IActionResult> DeleteTest(Guid testId)
 		{
@@ -202,6 +211,7 @@ namespace ConstructorForTests.Controllers
 		/// <response code="200">Успешное выполнение</response>
 		/// <response code="400">Ошибка API(Переданы некорретные данные)</response>
 		/// <response code="500">Ошибка сервера</response>
+		[SessionAuthentication]
 		[HttpPost("ManualCheck/{testId}")]
 		public async Task<IActionResult> SetManualCheck(Guid testId, List<ManualCheckDto> manualCheckData)
 		{
@@ -220,6 +230,7 @@ namespace ConstructorForTests.Controllers
 		/// <response code="200">Успешное выполнение</response>
 		/// <response code="400">Ошибка API(Переданы некорретные данные)</response>
 		/// <response code="500">Ошибка сервера</response>
+		[SessionAuthentication]
 		[HttpGet("ManualCheck/{testId}")]
 		public async Task<IActionResult> GetTestToCheck(Guid testId)
 		{
