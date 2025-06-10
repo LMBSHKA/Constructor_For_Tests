@@ -53,7 +53,7 @@ namespace ConstructorForTests.Controllers
 		[HttpGet("UserGetTest/{id}")]
 		public async Task<IActionResult> GetTestById(Guid id)
 		{
-			GetTestDTO? test;
+			SendTestDTO? test;
 			if (HttpContext.Session.GetString("CuratorId") == null)
 				test = await _testService.GetTest(id, false);
 
@@ -202,6 +202,13 @@ namespace ConstructorForTests.Controllers
 				return NotFound();
 
 			return Ok();
+		}
+
+		[HttpGet("ManualCheck/{testId}")]
+		public async Task<IActionResult> GetTestToCheck(Guid testId)
+		{
+			var listTestToSend = await _testRepo.CreateTestDtoToCheck(testId);
+			return Ok(listTestToSend);
 		}
 	}
 }

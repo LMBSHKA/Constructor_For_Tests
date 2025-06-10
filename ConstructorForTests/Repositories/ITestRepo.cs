@@ -13,5 +13,6 @@ namespace ConstructorForTests.Repositories
 		Task<List<StatisticDto>> GetStatistic(StatisticFilterDto statisticFilter, int pageNumber);
 		Task<int> DeleteTest(Guid testId);
 		Task<int> UpdateResult(Guid testId, List<ManualCheckDto> manualCheckData);
+		Task<List<SendTestToCheckDto>> CreateTestDtoToCheck(Guid testId);
 	}
 }

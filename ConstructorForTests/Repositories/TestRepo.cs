@@ -284,8 +284,53 @@ namespace ConstructorForTests.Repositories
 			{
 				await _emailSender.SendEmail(user.Email!, usersTestResult.TotalScore, test.MessageAboutPassing);
 			}
+			else
+				await _emailSender.SendEmail(user.Email!, usersTestResult.TotalScore, test.FailureMessage);
+		}
 
-			await _emailSender.SendEmail(user.Email!, usersTestResult.TotalScore, test.FailureMessage);
+		public async Task<List<SendTestToCheckDto>> CreateTestDtoToCheck(Guid testId)
+		{
+			var questions = await _context.Questions
+				.Where(x => x.TestId == testId && x.Type == QuestionType.DetailedAnswer)
+				.ToListAsync();
+			//var listUserAnswers = new List<IQueryable<UserAnswer>>();
+			var listTestToSend = new List<SendTestToCheckDto>();
+
+			foreach (var question in questions)
+			{
+				var userAnswers = _context.UserAnswers
+					.Where(x => x.QuestionId == question.Id);
+				foreach (var userAnswer in userAnswers)
+				{
+					var testToCheck = listTestToSend.FirstOrDefault(x => x.Userid == userAnswer.UserId);
+					if (testToCheck == null)
+					{
+						var sendToCheck = new SendTestToCheckDto { Userid = userAnswer.UserId, QuestionToCheckDtos = [new QuestionToCheckDto(question.Id, question.QuestionText, userAnswer.Text)] };
+						listTestToSend.Add(sendToCheck);
+					}
+					else
+					{
+						testToCheck.QuestionToCheckDtos.Add(new QuestionToCheckDto(question.Id, question.QuestionText, userAnswer.Text));
+					}
+				}
+				//listUserAnswers.Add(userAnswers);
+			}
+
+			return listTestToSend;
+			//var listQuestionToCheck = new List<QuestionToCheckDto>();
+			//var listToSend = new List<SendTestToCheckDto>();
+			//var answerDictionary = new Dictionary<Guid, List<UserAnswer>>();
+
+			//foreach (var userAnswerQueryable in listUserAnswers)
+			//{
+			//	foreach (var  answer in userAnswerQueryable)
+			//	{
+			//		if (answerDictionary.TryGetValue(answer.UserId, out List<UserAnswer>? value))
+			//			value.Add(answer);
+			//		else
+			//			answerDictionary.Add(answer.UserId, new List<UserAnswer> { answer });
+			//	}
+			//}
 		}
 	}
 }

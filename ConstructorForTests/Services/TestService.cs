@@ -16,7 +16,7 @@ namespace ConstructorForTests.Services
 			_testRepo = testRepo;
 		}
 
-		public async Task<GetTestDTO?> GetTest(Guid testId, bool isCurator)
+		public async Task<SendTestDTO?> GetTest(Guid testId, bool isCurator)
 		{
 			var test = await _testRepo.GetTestInfoById(testId);
 
@@ -29,7 +29,7 @@ namespace ConstructorForTests.Services
 
 			_testHandler.GetTestById(listGetQuestions, questions);
 
-			return new GetTestDTO(test, listGetQuestions);
+			return new SendTestDTO(test, listGetQuestions);
 		}
 
 		public string CalculateTimer(int timerInSeconds, string startTimer)

@@ -2,13 +2,13 @@
 
 namespace ConstructorForTests.Dtos
 {
-	public class GetQuestionDto : Question
+	public class SendQuestionDto : Question
 	{
 		public string[]? AnswerOptions { get; set; } = null;
 		public string[]? PairKey { get; set; } = null;
 		public string[]? PairValue { get; set; } = null;
 
-		public GetQuestionDto(Question question, string[] answerOptions)
+		public SendQuestionDto(Question question, string[] answerOptions)
 		{
 			Id = question.Id;
 			TestId = question.TestId;
@@ -20,7 +20,7 @@ namespace ConstructorForTests.Dtos
 
 		}
 
-		public GetQuestionDto(Question question, string[] pairKey, string[] pairValue)
+		public SendQuestionDto(Question question, string[] pairKey, string[] pairValue)
 		{
 			Id = question.Id;
 			TestId = question.TestId;
@@ -31,7 +31,7 @@ namespace ConstructorForTests.Dtos
 			Mark = question.Mark;
 			Order = question.Order;
 		}
-		public GetQuestionDto(Question question)
+		public SendQuestionDto(Question question)
 		{
 			Id = question.Id;
 			TestId = question.TestId;

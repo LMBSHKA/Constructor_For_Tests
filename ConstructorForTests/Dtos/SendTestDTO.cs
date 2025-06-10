@@ -3,15 +3,15 @@ using System.Globalization;
 
 namespace ConstructorForTests.Dtos
 {
-	public class GetTestDTO : CreateTestDto
+	public class SendTestDTO : CreateTestDto
 	{
 		public List<BaseQuestionDto> Questions { get; set; }
 
-		public GetTestDTO() { }
+		public SendTestDTO() { }
 		public bool IsActive { get; set; }
 		public bool ManualCheck { get; set; }
 
-		public GetTestDTO(Test test, List<BaseQuestionDto> questions)
+		public SendTestDTO(Test test, List<BaseQuestionDto> questions)
 		{
 			Title = test.Title;
 			StartAt = DateTime.ParseExact(test.StartAt, "dd.MM.yyyy", CultureInfo.InvariantCulture);
