@@ -1,12 +1,9 @@
-﻿using Azure;
-using ConstructorForTests.API;
+﻿using ConstructorForTests.API;
 using ConstructorForTests.Database;
 using ConstructorForTests.Dtos;
 using ConstructorForTests.Handlers;
 using ConstructorForTests.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Net.WebSockets;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ConstructorForTests.Repositories
 {
@@ -267,16 +264,27 @@ namespace ConstructorForTests.Repositories
 				var markSum = 0;
 
 				foreach (var markedQuestion in userMarks.MarkedQuestions)
+				{
 					markSum += markedQuestion.Mark;
+					await UpdateUserAnswer(userId, markedQuestion.QuestionId);
+				}
 
 				usersTestResult.TotalScore += markSum;
 				await CheckPassage(test, usersTestResult, user);
 				_context.Update(usersTestResult);
-				await _context.SaveChangesAsync();
-
 			}
+			await _context.SaveChangesAsync();
 
 			return StatusCodes.Status200OK;
+		}
+
+		public async Task UpdateUserAnswer(Guid userId, Guid questionId)
+		{
+			var userAnswer = await _context.UserAnswers
+				.FirstOrDefaultAsync(x => x.UserId == userId && x.QuestionId == questionId);
+			userAnswer.NeedVerification = false;
+			_context.Update(userAnswer);
+
 		}
 
 		private async Task CheckPassage(Test test, TestResult usersTestResult, User user)
@@ -300,7 +308,7 @@ namespace ConstructorForTests.Repositories
 			foreach (var question in questions)
 			{
 				var userAnswers = _context.UserAnswers
-					.Where(x => x.QuestionId == question.Id);
+					.Where(x => x.QuestionId == question.Id && x.NeedVerification == true);
 				_testHandler.CreateListToSend(listTestToSend, userAnswers, question);
 			}
 

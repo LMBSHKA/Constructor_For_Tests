@@ -124,15 +124,14 @@ namespace ConstructorForTests.Repositories
 			{
 				if (!string.IsNullOrEmpty(userAnswer.TextAnswer))
 				{
-					var answer = new UserAnswer(userId, userAnswer.QuestionId, Guid.Empty, Guid.Empty, userAnswer.TextAnswer);
-					await _context.UserAnswers.AddAsync(answer);
+					await AddTextAnswer(userAnswer, userId);
 				}
 
 				else if (userAnswer.MultipleAnswer.Count > 0)
 				{
 					var guid = Guid.NewGuid();
 					await SaveMultipleAnswer(userAnswer.MultipleAnswer, guid);
-					var answer = new UserAnswer(userId, userAnswer.QuestionId, guid, Guid.Empty, string.Empty);
+					var answer = new UserAnswer(userId, userAnswer.QuestionId, guid, Guid.Empty, string.Empty, false);
 					await _context.UserAnswers.AddAsync(answer);
 				}
 
@@ -140,13 +139,31 @@ namespace ConstructorForTests.Repositories
 				{
 					var guid = Guid.NewGuid();
 					await SavePairAnswer(userAnswer.MatchingPairs, guid);
-					var answer = new UserAnswer(userId, userAnswer.QuestionId, Guid.Empty, guid, string.Empty);
+					var answer = new UserAnswer(userId, userAnswer.QuestionId, Guid.Empty, guid, string.Empty, false);
 					await _context.UserAnswers.AddAsync(answer);
 				}
 			}
 			await _context.SaveChangesAsync();
 		}
 
+		private async Task AddTextAnswer(UserAnswersDto userAnswer, Guid userId)
+		{
+			var question = await _context.Questions
+				.FirstOrDefaultAsync(x => x.Id == userAnswer.QuestionId);
+			if (question.Type == QuestionType.DetailedAnswer)
+			{
+				var answer = new UserAnswer(userId, userAnswer.QuestionId,
+					Guid.Empty, Guid.Empty, userAnswer.TextAnswer, true);
+				await _context.UserAnswers.AddAsync(answer);
+			}
+			else
+			{
+				var answer = new UserAnswer(userId, userAnswer.QuestionId,
+					Guid.Empty, Guid.Empty, userAnswer.TextAnswer, false);
+				await _context.UserAnswers.AddAsync(answer);
+
+			}
+		}
 		private async Task SaveMultipleAnswer(List<string> multipleAnswers, Guid guid)
 		{
 			foreach (var multipleAnswer in multipleAnswers)
