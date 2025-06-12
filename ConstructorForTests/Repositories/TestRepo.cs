@@ -121,6 +121,7 @@ namespace ConstructorForTests.Repositories
 
 				var newTest = new Test(
 					createTestData.Title,
+					createTestData.Description!,
 					createTestData.StartAt.ToString("dd.MM.yyyy"),
 					createTestData.EndAt.ToString("dd.MM.yyyy"),
 					isActive,
@@ -269,10 +270,10 @@ namespace ConstructorForTests.Repositories
 					markSum += markedQuestion.Mark;
 
 				usersTestResult.TotalScore += markSum;
+				await CheckPassage(test, usersTestResult, user);
 				_context.Update(usersTestResult);
 				await _context.SaveChangesAsync();
 
-				await CheckPassage(test, usersTestResult, user);
 			}
 
 			return StatusCodes.Status200OK;
@@ -282,6 +283,7 @@ namespace ConstructorForTests.Repositories
 		{
 			if (_userRepo.CheckPassage(test, usersTestResult.TotalScore))
 			{
+				usersTestResult.IsPassed = true;
 				await _emailSender.SendEmail(user.Email!, usersTestResult.TotalScore, test.MessageAboutPassing);
 			}
 			else

@@ -7,6 +7,7 @@ namespace ConstructorForTests.Dtos
 	public class CreateTestDto
 	{
 		public string? Title { get; set; } = null;
+		public string? Description { get; set; } = null;
 		public DateTime StartAt { get; set; } = DateTime.MinValue;
 		public DateTime EndAt { get; set; } = DateTime.MinValue;
 		public decimal ScoreToPass { get; set; } = decimal.Zero;

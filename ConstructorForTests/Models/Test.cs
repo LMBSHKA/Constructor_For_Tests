@@ -11,6 +11,8 @@ namespace ConstructorForTests.Models
 		[Required]
 		public string Title { get; set; } = null;
 		[Required]
+		public string Description { get; set; } = null;
+		[Required]
 		public string StartAt { get; set; } = String.Empty;
 		[Required]
 		public string EndAt { get; set; } = String.Empty;
@@ -29,10 +31,11 @@ namespace ConstructorForTests.Models
 
 		public Test() { }
 
-		public Test(string title, string startAt, string endAt,bool isActive, decimal scoreToPass, 
+		public Test(string title, string description, string startAt, string endAt,bool isActive, decimal scoreToPass, 
 			bool manualCheck, string userId, string messageAboutPassing, string failureMessage, string timerInSeconds)
 		{
 			Title = title;
+			Description = description;
 			StartAt = startAt;
 			EndAt = endAt;
 			IsActive = isActive;

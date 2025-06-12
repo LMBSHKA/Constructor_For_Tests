@@ -14,6 +14,7 @@ namespace ConstructorForTests.Dtos
 		public SendTestDTO(Test test, List<BaseQuestionDto> questions)
 		{
 			Title = test.Title;
+			Description = test.Description;
 			StartAt = DateTime.ParseExact(test.StartAt, "dd.MM.yyyy", CultureInfo.InvariantCulture);
 			EndAt = DateTime.ParseExact(test.EndAt, "dd.MM.yyyy", CultureInfo.InvariantCulture);
 			IsActive = test.IsActive;
