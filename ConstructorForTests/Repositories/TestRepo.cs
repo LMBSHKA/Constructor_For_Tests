@@ -78,7 +78,8 @@ namespace ConstructorForTests.Repositories
 
 		public IQueryable<Test> GetAllTests()
 		{
-			return _context.Tests.Where(x => x.IsDelete == false);
+			return _context.Tests
+				.Where(x => x.IsDelete == false);
 		}
 
 		public async Task<Test?> GetTestInfoById(Guid id)

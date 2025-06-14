@@ -4,6 +4,7 @@ using ConstructorForTests.Models;
 using ConstructorForTests.Repositories;
 using ConstructorForTests.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 
 namespace ConstructorForTests.Controllers
@@ -35,10 +36,10 @@ namespace ConstructorForTests.Controllers
 		[HttpGet("GetAllTests")]
 		public async Task<IActionResult> GetAllTests()
 		{
-			Console.WriteLine(HttpContext.Session.GetString("Time"));
-			var allTests = _testRepo.GetAllTests();
-			var testsByUserId = allTests.Where(x => x.UserId == HttpContext.Session.GetString("CuratorId"));
-			return Ok(testsByUserId);
+			var curatorId = HttpContext.Session.GetString("CuratorId");
+			var listTestsByCuratorId = await _testService.GetAllTests(curatorId!);
+
+			return Ok(listTestsByCuratorId);
 		}
 
 		/// <summary>

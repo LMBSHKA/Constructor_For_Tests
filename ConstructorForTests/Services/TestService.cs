@@ -2,6 +2,7 @@
 using ConstructorForTests.Handlers;
 using ConstructorForTests.Models;
 using ConstructorForTests.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConstructorForTests.Services
 {
@@ -14,6 +15,16 @@ namespace ConstructorForTests.Services
 		{
 			_testHandler = testHandler;
 			_testRepo = testRepo;
+		}
+
+		public async Task<List<Test>> GetAllTests(string curatorId)
+		{
+			var allTests = _testRepo.GetAllTests();
+			var testsByUserId = await allTests
+				.Where(x => x.UserId == curatorId)
+				.ToListAsync();
+
+			return testsByUserId;
 		}
 
 		public async Task<SendTestDTO?> GetTest(Guid testId, bool isCurator)
