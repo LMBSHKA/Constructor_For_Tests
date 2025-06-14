@@ -52,31 +52,14 @@ namespace ConstructorForTests.Controllers
 		/// <response code="404">Тест не найден</response>
 		/// <response code="500">Ошибка сервера</response>
 		[HttpGet("UserGetTest/{id}")]
+		[TypeFilter(typeof(SetTimerAttribute))]
 		public async Task<IActionResult> GetTestById(Guid id)
 		{
-			SendTestDTO? test;
-			if (HttpContext.Session.GetString("CuratorId") == null)
-				test = await _testService.GetTest(id, false);
-
-			else
-				test = await _testService.GetTest(id, true);
+			var isCurator = HttpContext.Session.GetString("CuratorId") != null;
+			var test = await _testService.GetTest(id, isCurator);
 
 			if (test == null)
 				return NotFound();
-
-			if (HttpContext.Session.GetString("StartTime") == null)
-			{
-				HttpContext.Response.Headers
-					.Add(new KeyValuePair<string, StringValues>("Remaining-Time", test.TimerInSeconds.ToString()));
-				HttpContext.Session.SetString("StartTime", DateTime.Now.ToLongTimeString());
-			}
-
-			else
-			{
-				var startTimer = HttpContext.Session.GetString("StartTime");
-				var remainingTime = _testService.CalculateTimer(test.TimerInSeconds!, startTimer!);
-				HttpContext.Response.Headers.Add(new KeyValuePair<string, StringValues>("Remaining-Time", remainingTime));
-			}
 
 			return Ok(test);
 		}
@@ -138,7 +121,7 @@ namespace ConstructorForTests.Controllers
 		public async Task<IActionResult> CreateTest([FromBody] CreateTestDto createTestData)
 		{
 			var curatorId = HttpContext.Session.GetString("CuratorId");
-			if (await _testRepo.CreateTest(createTestData, curatorId))
+			if (await _testRepo.CreateTest(createTestData, curatorId!))
 				return Ok();
 
 			return BadRequest("Something went wrong");
@@ -162,7 +145,7 @@ namespace ConstructorForTests.Controllers
 				return NotFound();
 
 			var curatorId = HttpContext.Session.GetString("CuratorId");
-			if (await _testRepo.CreateTest(createTestDto, curatorId))
+			if (await _testRepo.CreateTest(createTestDto, curatorId!))
 				return Ok();
 
 			return BadRequest("Something went wrong");

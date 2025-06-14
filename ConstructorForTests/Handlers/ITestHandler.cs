@@ -5,7 +5,6 @@ namespace ConstructorForTests.Handlers
 {
 	public interface ITestHandler
 	{
-		void GetTestById(List<BaseQuestionDto> listGetQuestions, List<Question> questions);
 		void CreateStatisticDto(StatisticFilterDto statisticFilter, List<StatisticDto> statistics,
 			User user, Test test, TestResult testResult);
 		void CreateListToSend(List<SendTestToCheckDto> listTestToSend, IQueryable<UserAnswer> userAnswers, Question question);

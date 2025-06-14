@@ -9,11 +9,9 @@ namespace ConstructorForTests.Services
 	public class TestService : ITestService
 	{
 		private readonly ITestRepo _testRepo;
-		private readonly ITestHandler _testHandler;
 
-		public TestService(ITestRepo testRepo, ITestHandler testHandler)
+		public TestService(ITestRepo testRepo)
 		{
-			_testHandler = testHandler;
 			_testRepo = testRepo;
 		}
 
@@ -34,13 +32,40 @@ namespace ConstructorForTests.Services
 			if (test == null || (test.IsActive == false && isCurator == false))
 				return null;
 
-			var questions = await _testRepo.GetTestQuestion(testId);
+			var questions = await _testRepo.GetTestQuestion(testId)
+				.ToListAsync();
 
 			var listGetQuestions = new List<BaseQuestionDto>();
 
-			_testHandler.GetTestById(listGetQuestions, questions);
+			CreateListBaseQuestionDto(listGetQuestions, questions);
 
 			return new SendTestDTO(test, listGetQuestions);
+		}
+
+		private static void CreateListBaseQuestionDto(List<BaseQuestionDto> listGetQuestions, List<Question> questions)
+		{
+			foreach (var question in questions)
+			{
+				BaseQuestionDto questionDto;
+
+				if (!string.IsNullOrEmpty(question.AnswerOptions))
+				{
+					questionDto = new QuestionWithOptionsDto(question, new AllAnswerDto(question.AnswerOptions.Split(' ')));
+				}
+
+				else if (!string.IsNullOrEmpty(question.PairKey) && !string.IsNullOrEmpty(question.PairValue))
+				{
+					questionDto = new QuestionWithPairDto(question, 
+						new AllAnswerDto(question.PairKey.Split(' '), question.PairValue.Split(' ')));
+				}
+
+				else
+				{
+					questionDto = new SimpleQuestionDto(question);
+				}
+
+				listGetQuestions.Add(questionDto);
+			}
 		}
 
 		public string CalculateTimer(int timerInSeconds, string startTimer)

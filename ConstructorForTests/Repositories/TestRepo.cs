@@ -84,24 +84,20 @@ namespace ConstructorForTests.Repositories
 
 		public async Task<Test?> GetTestInfoById(Guid id)
 		{
-
 			if (id == Guid.Empty)
 				return null;
 
-			var test = await _context.Tests.FirstOrDefaultAsync(t => t.Id == id && t.IsDelete == false);
-
-			if (test == null)
-				return null;
+			var test = await _context.Tests
+				.FirstOrDefaultAsync(t => t.Id == id && t.IsDelete == false);
 
 			return test;
 		}
 
-		public async Task<List<Question>> GetTestQuestion(Guid testId)
+		public IOrderedQueryable<Question> GetTestQuestion(Guid testId)
 		{
-			var questions = await _context.Questions
+			var questions = _context.Questions
 				.Where(x => x.TestId == testId)
-				.OrderBy(x => x.Order)
-				.ToListAsync();
+				.OrderBy(x => x.Order);
 
 			return questions;
 		}
