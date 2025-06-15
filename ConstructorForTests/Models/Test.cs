@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ConstructorForTests.Dtos;
+using System.ComponentModel.DataAnnotations;
 
 namespace ConstructorForTests.Models
 {
@@ -31,20 +32,19 @@ namespace ConstructorForTests.Models
 
 		public Test() { }
 
-		public Test(string title, string description, string startAt, string endAt,bool isActive, decimal scoreToPass, 
-			bool manualCheck, string userId, string messageAboutPassing, string failureMessage, string timerInSeconds)
+		public Test(CreateTestDto createTest, bool isAvtive, bool manualCheck, string curatorId)
 		{
-			Title = title;
-			Description = description;
-			StartAt = startAt;
-			EndAt = endAt;
-			IsActive = isActive;
-			ScoreToPass = scoreToPass;
+			UserId = curatorId;
+			Title = createTest.Title!;
+			Description = createTest.Description!;
+			StartAt = createTest.StartAt.ToString("dd.MM.yyyy");
+			EndAt = createTest.EndAt.ToString("dd.MM.yyyy");
+			IsActive = isAvtive;
+			ScoreToPass = createTest.ScoreToPass;
 			ManualCheck = manualCheck;
-			UserId = userId;
-			MessageAboutPassing = messageAboutPassing;
-			FailureMessage = failureMessage;
-			TimerInSeconds = timerInSeconds;
+			MessageAboutPassing = createTest.MessageAboutPassing!;
+			FailureMessage = createTest.FailureMessage!;
+			TimerInSeconds = createTest.TimerInSeconds.ToString();
 		}
 	}
 }

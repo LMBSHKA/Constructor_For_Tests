@@ -102,110 +102,29 @@ namespace ConstructorForTests.Repositories
 			return questions;
 		}
 
-		public async Task<bool> CreateTest(CreateTestDto createTestData, string curatorId)
+		public async Task CreateTestInfo(Test newTest)
 		{
-			try
-			{
-				if (createTestData.Title == null)
-					return false;
-
-				var isActive = false;
-				if (createTestData.StartAt <= DateTime.Now)
-					isActive = true;
-
-				var newTest = new Test(
-					createTestData.Title,
-					createTestData.Description!,
-					createTestData.StartAt.ToString("dd.MM.yyyy"),
-					createTestData.EndAt.ToString("dd.MM.yyyy"),
-					isActive,
-					createTestData.ScoreToPass,
-					false,
-					curatorId!,
-					createTestData.MessageAboutPassing!,
-					createTestData.FailureMessage!,
-					createTestData.TimerInSeconds.ToString()
-					);
-
-				await _context.Tests.AddAsync(newTest);
-				await _context.SaveChangesAsync();
-				await AddQuestion(newTest.Id, createTestData.Questions, newTest);
-				await _context.SaveChangesAsync();
-
-				return true;
-			}
-
-			catch
-			{
-				return false;
-			}
+			await _context.Tests.AddAsync(newTest);
 		}
 
-		private async Task AddQuestion(Guid testId, List<CreateQuestionDTO> questions, Test test)
+		public async Task AddQuestion(Question newQuestion)
 		{
-			var order = 1;
-			foreach (var question in questions)
-			{
-				var newQuestion = new Question(testId, question.QuestionText, question.Type, 1,
-					order, question.AnswerOptions, question.PairKey, question.PairValue);
-				await _context.Questions.AddAsync(newQuestion);
-				if (question.Type == QuestionType.DetailedAnswer)
-				{
-					test.ManualCheck = true;
-				}
-
-				await AddAnswer(newQuestion.Id, question.CreateAnswer, testId);
-				order++;
-			}
+			await _context.Questions.AddAsync(newQuestion);
 		}
 
-		private async Task AddAnswer(Guid questionId, AnswerDTO answer, Guid testId)
+		public async Task AddAnswer(Answer newAnswer)
 		{
-			if (!string.IsNullOrEmpty(answer.TextAnswer))
-			{
-				var newAnswer = new Answer(questionId, Guid.Empty, Guid.Empty, answer.TextAnswer, testId);
-				await _context.Answers.AddAsync(newAnswer);
-				var guid = newAnswer.Id;
-
-				var test = await _context.Answers.FirstOrDefaultAsync(x => x.Id == guid);
-			}
-
-
-			else if (answer.MultipleAnswer.Count > 0)
-			{
-				await AddMultipleAnswer(answer.MultipleAnswer, testId, questionId);
-			}
-
-			else if (answer.MatchingPairs.Count > 0)
-			{
-				await AddPairAnswer(answer.MatchingPairs, testId, questionId);
-			}
-		}
-
-		private async Task AddMultipleAnswer(List<string> multipleAnswers, Guid testId, Guid questionId)
-		{
-			var guid = Guid.NewGuid();
-			var newAnswer = new Answer(questionId, guid, Guid.Empty, string.Empty, testId);
 			await _context.Answers.AddAsync(newAnswer);
-
-			foreach (var singleAnswer in multipleAnswers)
-			{
-				var newSingleAnswer = new MultipleChoice(guid, singleAnswer);
-				await _context.MultipleChoices.AddAsync(newSingleAnswer);
-			}
 		}
 
-		private async Task AddPairAnswer(Dictionary<string, string> pairAnswers, Guid testId, Guid questionId)
+		public async Task AddSingleSolutionForMultipleAnswer(MultipleChoice newSingleAnswer)
 		{
-			var guid = Guid.NewGuid();
-			var newAnswer = new Answer(questionId, Guid.Empty, guid, string.Empty, testId);
-			await _context.Answers.AddAsync(newAnswer);
+			await _context.MultipleChoices.AddAsync(newSingleAnswer);
+		}
 
-			foreach (var answer in pairAnswers)
-			{
-				var pairAnswer = new MatchingPair(guid, answer.Key, answer.Value);
-				await _context.MatchingPairs.AddAsync(pairAnswer);
-			}
+		public async Task AddPairAnswer(MatchingPair pairAnswer)
+		{
+			await _context.MatchingPairs.AddAsync(pairAnswer);
 		}
 
 		public async Task<bool> UpdateTest(Guid id, Test updateTestData)
@@ -310,6 +229,10 @@ namespace ConstructorForTests.Repositories
 			}
 
 			return listTestToSend;
+		}
+		public async Task SaveChecnhesAsync()
+		{
+			await _context.SaveChangesAsync();
 		}
 	}
 }

@@ -121,7 +121,7 @@ namespace ConstructorForTests.Controllers
 		public async Task<IActionResult> CreateTest([FromBody] CreateTestDto createTestData)
 		{
 			var curatorId = HttpContext.Session.GetString("CuratorId");
-			if (await _testRepo.CreateTest(createTestData, curatorId!))
+			if (await _testService.CreateTest(createTestData, curatorId!))
 				return Ok();
 
 			return BadRequest("Something went wrong");
@@ -145,7 +145,7 @@ namespace ConstructorForTests.Controllers
 				return NotFound();
 
 			var curatorId = HttpContext.Session.GetString("CuratorId");
-			if (await _testRepo.CreateTest(createTestDto, curatorId!))
+			if (await _testService.CreateTest(createTestDto, curatorId!))
 				return Ok();
 
 			return BadRequest("Something went wrong");

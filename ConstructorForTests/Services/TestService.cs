@@ -77,5 +77,88 @@ namespace ConstructorForTests.Services
 
 			return remainingTimeSeconds;
 		}
+
+		public async Task<bool> CreateTest(CreateTestDto createTestData, string curatorId)
+		{
+			if (createTestData.Title == null)
+				return false;
+
+			var isActive = false;
+			if (createTestData.StartAt <= DateTime.Now)
+				isActive = true;
+
+			var newTest = new Test(createTestData, isActive, false, curatorId!);
+			await _testRepo.CreateTestInfo(newTest);
+			await AddQuestions(createTestData.Questions!, newTest);
+			await _testRepo.SaveChecnhesAsync();
+
+			return true;
+		}
+
+		private async Task AddQuestions(List<CreateQuestionDTO> questions, Test test)
+		{
+			var order = 1;
+			decimal questionMark = 1;
+			foreach (var question in questions)
+			{
+				var newQuestion = new Question(test.Id, question, order, questionMark);
+				CheckForManualCheck(test, question.Type);
+
+				await _testRepo.AddQuestion(newQuestion);
+				await AddAnswer(newQuestion.Id, question.CreateAnswer, test.Id);
+				order++;
+			}
+		}
+
+		private static void CheckForManualCheck(Test test, QuestionType questionType)
+		{
+			if (questionType == QuestionType.DetailedAnswer)
+				test.ManualCheck = true;
+		}
+
+		private async Task AddAnswer(Guid questionId, AnswerDTO answer, Guid testId)
+		{
+			if (!string.IsNullOrEmpty(answer.TextAnswer))
+			{
+				var newAnswer = new Answer(questionId, Guid.Empty, Guid.Empty, answer.TextAnswer, testId);
+				await _testRepo.AddAnswer(newAnswer);
+			}
+
+			else if (answer.MultipleAnswer.Count > 0)
+			{
+				await AddMultipleAnswer(answer.MultipleAnswer, testId, questionId);
+			}
+
+			else if (answer.MatchingPairs.Count > 0)
+			{
+				await AddPairAnswer(answer.MatchingPairs, testId, questionId);
+			}
+		}
+
+		private async Task AddMultipleAnswer(List<string> multipleAnswers, Guid testId, Guid questionId)
+		{
+			var guid = Guid.NewGuid();
+			var newAnswer = new Answer(questionId, guid, Guid.Empty, string.Empty, testId);
+			await _testRepo.AddAnswer(newAnswer);
+
+			foreach (var singleAnswer in multipleAnswers)
+			{
+				var newSingleAnswer = new MultipleChoice(guid, singleAnswer);
+				await _testRepo.AddSingleSolutionForMultipleAnswer(newSingleAnswer);
+			}
+		}
+
+		private async Task AddPairAnswer(Dictionary<string, string> pairAnswers, Guid testId, Guid questionId)
+		{
+			var guid = Guid.NewGuid();
+			var newAnswer = new Answer(questionId, Guid.Empty, guid, string.Empty, testId);
+			await _testRepo.AddAnswer(newAnswer);
+
+			foreach (var answer in pairAnswers)
+			{
+				var pairAnswer = new MatchingPair(guid, answer.Key, answer.Value);
+				await _testRepo.AddPairAnswer(pairAnswer);
+			}
+		}
 	}
 }

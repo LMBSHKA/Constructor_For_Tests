@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ConstructorForTests.Dtos;
+using System.ComponentModel.DataAnnotations;
 
 namespace ConstructorForTests.Models
 {
@@ -21,15 +22,14 @@ namespace ConstructorForTests.Models
 
 		public Question() { }
 
-		public Question(Guid testId, string questionText, QuestionType questionType, 
-			decimal mark, int order, string answerOptions, string pairKey, string pairValue)
+		public Question(Guid testId, CreateQuestionDTO newQuestion, int order, decimal mark)
 		{
 			TestId = testId;
-			QuestionText = questionText;
-			AnswerOptions = answerOptions;
-			PairKey = pairKey;
-			PairValue = pairValue;
-			Type = questionType;
+			QuestionText = newQuestion.QuestionText;
+			AnswerOptions = newQuestion.AnswerOptions;
+			PairKey = newQuestion.PairKey;
+			PairValue = newQuestion.PairValue;
+			Type = newQuestion.Type;
 			Mark = mark;
 			Order = order;
 		}
