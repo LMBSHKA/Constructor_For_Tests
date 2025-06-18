@@ -221,5 +221,26 @@ namespace ConstructorForTests.Controllers
 			var listTestToSend = await _testRepo.CreateTestDtoToCheck(testId);
 			return Ok(listTestToSend);
 		}
+
+		/// <summary>
+		/// Получение теста и его ответов по его id для редактирования
+		/// Только авторизованные пользователи
+		/// </summary>
+		/// <returns></returns>
+		/// <response code="200">Успешное выполнение</response>
+		/// <response code="400">Ошибка API(Переданы некорретные данные)</response>
+		/// <response code="500">Ошибка сервера</response>
+		[SessionAuthentication]
+		[HttpGet("GetTest/Redactor{testId}")]
+		public async Task<IActionResult> GetTestByIdForRedactor(Guid testId)
+		{
+			var test = await _testService.GetTest(testId, true);
+			if (test == null)
+				return NotFound();
+
+			await _testService.SetCorrectAnswersForQuestions(test.Questions);
+
+			return Ok(test);
+		}
 	}
 }

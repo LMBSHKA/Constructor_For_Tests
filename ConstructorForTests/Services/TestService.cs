@@ -68,6 +68,39 @@ namespace ConstructorForTests.Services
 			}
 		}
 
+		public async Task SetCorrectAnswersForQuestions(List<BaseQuestionDto> listQuestions)
+		{
+			foreach (var question in listQuestions)
+			{
+				var correctAnswer = await _testRepo.GetQuestionsCorrectAnswers(question.Id);
+				if (correctAnswer != null)
+				{
+					if (correctAnswer != null && question is SimpleQuestionDto simpleQuestion)
+					{
+						var answer = new AllAnswerDto([correctAnswer.TextAnswer]);
+						simpleQuestion.CorrectAnswers = answer;
+					}
+					else if (correctAnswer != null && question is QuestionWithOptionsDto questionWithOptions)
+					{
+						var multipleAnswer = await _testRepo.GetMultipleChoice(correctAnswer.MultipleAnswerId)
+							.Select(x => x.Answer)
+							.ToArrayAsync();
+						var answers = new AllAnswerDto(multipleAnswer!);
+						questionWithOptions.CorrectAnswers = answers;
+					}
+					else if (correctAnswer != null && question is QuestionWithPairDto questionWithPair)
+					{
+						var pairs = await _testRepo.GetMatchingPair(correctAnswer.PairId)
+							.ToArrayAsync();
+						var pairKey = pairs.Select(x => x.PairKey).ToArray();
+						var pairValue = pairs.Select(x => x.PairValue).ToArray();
+						var answers = new AllAnswerDto(pairKey, pairValue);
+						questionWithPair.CorrectAnswers = answers;
+					}
+				}
+			}
+		}
+
 		public string CalculateTimer(int timerInSeconds, string startTimer)
 		{
 			var passedTime = TimeSpan.Parse(DateTime.Now.ToLongTimeString()).Subtract(TimeSpan.Parse(startTimer!));

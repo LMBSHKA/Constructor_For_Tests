@@ -9,5 +9,6 @@ namespace ConstructorForTests.Services
 		string CalculateTimer(int timerInSeconds, string startTimer);
 		Task<List<Test>> GetAllTests(string curatorId);
 		Task<bool> CreateTest(CreateTestDto createTestData, string curatorId);
+		Task SetCorrectAnswersForQuestions(List<BaseQuestionDto> listQuestions);
 	}
 }

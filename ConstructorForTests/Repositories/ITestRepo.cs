@@ -10,6 +10,9 @@ namespace ConstructorForTests.Repositories
 		Task AddQuestion(Question newQuestion);
 		Task AddAnswer(Answer newAnswer);
 		Task AddSingleSolutionForMultipleAnswer(MultipleChoice newSingleAnswer);
+		Task<Answer> GetQuestionsCorrectAnswers(Guid questionId);
+		IQueryable<MultipleChoice> GetMultipleChoice(Guid multipleAnswerId);
+		IQueryable<MatchingPair> GetMatchingPair(Guid pairId);
 		Task AddPairAnswer(MatchingPair pairAnswer);
 		Task<bool> UpdateTest(Guid id, Test updateTestData);
 		Task<Test?> GetTestInfoById(Guid id);

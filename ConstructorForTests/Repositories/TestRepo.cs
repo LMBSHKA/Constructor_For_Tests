@@ -127,6 +127,29 @@ namespace ConstructorForTests.Repositories
 			await _context.MatchingPairs.AddAsync(pairAnswer);
 		}
 
+		public async Task<Answer> GetQuestionsCorrectAnswers(Guid questionId)
+		{
+			var correctAnswers = await _context.Answers
+				.FirstOrDefaultAsync(x => x.QuestionId == questionId);
+			return correctAnswers;
+		}
+
+		public IQueryable<MultipleChoice> GetMultipleChoice(Guid multipleAnswerId)
+		{
+			var queryableAnswers = _context.MultipleChoices
+				.Where(x => x.MultipleAnswerId == multipleAnswerId);
+
+			return queryableAnswers;
+		}
+
+		public IQueryable<MatchingPair> GetMatchingPair(Guid pairId)
+		{
+			var queryableAnswers = _context.MatchingPairs
+				.Where(x => x.PairId == pairId);
+
+			return queryableAnswers;
+		}
+
 		public async Task<bool> UpdateTest(Guid id, Test updateTestData)
 		{
 			if (id != updateTestData.Id)

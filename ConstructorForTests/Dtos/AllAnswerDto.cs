@@ -8,7 +8,7 @@ namespace ConstructorForTests.Dtos
 		public string[]? PairKey { get; set; } = null;
 		public string[]? PairValue { get; set; } = null;
 
-		public AllAnswerDto(string[] answerOptions)
+		public AllAnswerDto(string[]? answerOptions)
 		{
 			AnswerOptions = answerOptions;
 		}

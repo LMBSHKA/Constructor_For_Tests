@@ -23,19 +23,23 @@ namespace ConstructorForTests.Filters
 			var testId = (Guid)context.ActionArguments["id"]!;
 			var testInfo = await _testRepo.GetTestInfoById(testId);
 			var httpContext = context.HttpContext;
+			var curatorId = httpContext.Session.GetString("CuratorId");
 
-			if (httpContext.Session.GetString("StartTime") == null)
+			if (string.IsNullOrEmpty(curatorId))
 			{
-				httpContext.Response.Headers
-					.Add(new KeyValuePair<string, StringValues>("Remaining-Time", testInfo!.TimerInSeconds!.ToString()));
-				httpContext.Session.SetString("StartTime", DateTime.Now.ToLongTimeString());
-			}
+				if (httpContext.Session.GetString("StartTime") == null)
+				{
+					httpContext.Response.Headers
+						.Add(new KeyValuePair<string, StringValues>("Remaining-Time", testInfo!.TimerInSeconds!.ToString()));
+					httpContext.Session.SetString("StartTime", DateTime.Now.ToLongTimeString());
+				}
 
-			else
-			{
-				var startTimer = httpContext.Session.GetString("StartTime");
-				var remainingTime = _testService.CalculateTimer(int.Parse(testInfo!.TimerInSeconds!), startTimer!);
-				httpContext.Response.Headers.Add(new KeyValuePair<string, StringValues>("Remaining-Time", remainingTime));
+				else
+				{
+					var startTimer = httpContext.Session.GetString("StartTime");
+					var remainingTime = _testService.CalculateTimer(int.Parse(testInfo!.TimerInSeconds!), startTimer!);
+					httpContext.Response.Headers.Add(new KeyValuePair<string, StringValues>("Remaining-Time", remainingTime));
+				}
 			}
 
 			await next();
