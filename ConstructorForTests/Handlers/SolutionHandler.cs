@@ -7,10 +7,9 @@ namespace ConstructorForTests.UserSolutionHandler
 {
 	public class SolutionHandler : ISolutionHandler
 	{
-		public async Task<decimal> CheckMultipleAnswer(UserAnswersDto userAnswer, List<string> correctMultipleAnswer)
+		public async Task<decimal> CheckMultipleAnswer(UserAnswersDto userAnswer, 
+			List<string> correctMultipleAnswer, decimal questionMark)
 		{
-			decimal score = 0;
-
 			if (correctMultipleAnswer.Count == userAnswer.MultipleAnswer.Count)
 			{
 				var flag = true;
@@ -24,16 +23,15 @@ namespace ConstructorForTests.UserSolutionHandler
 				}
 
 				if (flag)
-					score = 1;
+					return questionMark;
 			}
 
-			return score;
+			return 0;
 		}
 
-		public async Task<decimal> CheckPairAnswer(UserAnswersDto userAnswer, List<MatchingPair> correctPairsAnswer)
+		public async Task<decimal> CheckPairAnswer(UserAnswersDto userAnswer, 
+			List<MatchingPair> correctPairsAnswer, decimal questionMark)
 		{
-			decimal score = 0;
-
 			if (correctPairsAnswer.Count == userAnswer.MatchingPairs.Count)
 			{
 				var flag = true;
@@ -48,10 +46,10 @@ namespace ConstructorForTests.UserSolutionHandler
 				}
 
 				if (flag)
-					score = 1;
+					return questionMark;
 			}
 
-			return score;
+			return 0;
 		}
 	}
 }

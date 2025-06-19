@@ -89,6 +89,10 @@ namespace ConstructorForTests.Services
 			foreach (var question in listQuestions)
 			{
 				var correctAnswer = await _testRepo.GetQuestionsCorrectAnswers(question.Id);
+				var testQuestion = await _testRepo.GetTestQuestion(question.TestId)
+					.FirstOrDefaultAsync(x => x.Id == question.Id);
+				if (testQuestion != null && testQuestion.Mark > 0)
+					question.Mark = testQuestion!.Mark;
 				if (correctAnswer != null)
 				{
 					if (correctAnswer != null && question is SimpleQuestionDto simpleQuestion)
@@ -147,10 +151,9 @@ namespace ConstructorForTests.Services
 		private async Task AddQuestions(List<CreateQuestionDTO> questions, Test test)
 		{
 			var order = 1;
-			decimal questionMark = 1;
 			foreach (var question in questions)
 			{
-				var newQuestion = new Question(test.Id, question, order, questionMark);
+				var newQuestion = new Question(test.Id, question, order);
 				CheckForManualCheck(test, question.Type);
 
 				await _testRepo.AddQuestion(newQuestion);

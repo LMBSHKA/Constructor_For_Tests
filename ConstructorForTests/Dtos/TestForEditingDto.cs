@@ -5,6 +5,7 @@ namespace ConstructorForTests.Dtos
 	public class TestForEditingDto : CreateTestDto
 	{
 		public List<BaseQuestionDto> Questions { get; set; }
+
 		public TestForEditingDto(Test test, List<BaseQuestionDto> questions)
 		{
 			Title = test.Title;
@@ -16,6 +17,7 @@ namespace ConstructorForTests.Dtos
 			FailureMessage = test.FailureMessage;
 			TimerInSeconds = int.Parse(test.TimerInSeconds!);
 			Questions = questions;
+			
 		}
 	}
 }

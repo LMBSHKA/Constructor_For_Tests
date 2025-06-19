@@ -38,7 +38,8 @@ namespace ConstructorForTests.Repositories
 
 			foreach (var userAnswer in userSolution.Answers)
 			{
-				score += await CheckAnswer(correctAnswers, userAnswer);
+				var questionMark = questions.FirstOrDefault(x => x.Id == userAnswer.QuestionId)!.Mark;
+				score += await CheckAnswer(correctAnswers, userAnswer, questionMark);
 			}
 
 			var isPassed = await CreateTestResult(test, userId, score);
@@ -82,7 +83,7 @@ namespace ConstructorForTests.Repositories
 				return false;
 		}
 
-		private async Task<decimal> CheckAnswer(List<Answer> correctAnswers, UserAnswersDto userAnswer)
+		private async Task<decimal> CheckAnswer(List<Answer> correctAnswers, UserAnswersDto userAnswer, decimal mark)
 		{
 			var correctAnswer = correctAnswers.FirstOrDefault(x => x.QuestionId == userAnswer.QuestionId);
 			if (correctAnswer != null)
@@ -91,7 +92,7 @@ namespace ConstructorForTests.Repositories
 				{
 					if (correctAnswer.TextAnswer == userAnswer.TextAnswer)
 					{
-						return 1;
+						return mark;
 					}
 				}
 
@@ -102,7 +103,7 @@ namespace ConstructorForTests.Repositories
 						.Select(x => x.Answer)
 						.ToListAsync();
 
-					return await _solutionHandler.CheckMultipleAnswer(userAnswer, correctMultipleAnswer);
+					return await _solutionHandler.CheckMultipleAnswer(userAnswer, correctMultipleAnswer, mark);
 				}
 
 				else if (correctAnswer.PairId != Guid.Empty)
@@ -111,7 +112,7 @@ namespace ConstructorForTests.Repositories
 						.Where(x => x.PairId == correctAnswer.PairId)
 						.ToListAsync();
 
-					return await _solutionHandler.CheckPairAnswer(userAnswer, correctPairsAnswer);
+					return await _solutionHandler.CheckPairAnswer(userAnswer, correctPairsAnswer, mark);
 				}
 			}
 

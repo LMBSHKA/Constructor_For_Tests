@@ -10,6 +10,7 @@ namespace ConstructorForTests.Dtos
 		public string? PairKey { get; set; } = string.Empty;
 		public string? PairValue { get; set; } = string.Empty;
 		public QuestionType Type { get; set; }
+		public decimal Mark { get; set; }
 		public AnswerDTO CreateAnswer { get; set; }
 	}
 }

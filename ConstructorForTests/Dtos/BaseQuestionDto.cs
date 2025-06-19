@@ -14,5 +14,6 @@ namespace ConstructorForTests.Dtos
 		public string? QuestionText { get; set; }
 		public QuestionType Type { get; set; }
 		public string[]? Test { get; set; } = null;
+		public decimal? Mark { get; set; } = null;
 	}
 }

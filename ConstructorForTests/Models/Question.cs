@@ -22,7 +22,7 @@ namespace ConstructorForTests.Models
 
 		public Question() { }
 
-		public Question(Guid testId, CreateQuestionDTO newQuestion, int order, decimal mark)
+		public Question(Guid testId, CreateQuestionDTO newQuestion, int order)
 		{
 			TestId = testId;
 			QuestionText = newQuestion.QuestionText;
@@ -30,7 +30,7 @@ namespace ConstructorForTests.Models
 			PairKey = newQuestion.PairKey;
 			PairValue = newQuestion.PairValue;
 			Type = newQuestion.Type;
-			Mark = mark;
+			Mark = newQuestion.Mark;
 			Order = order;
 		}
 	}
