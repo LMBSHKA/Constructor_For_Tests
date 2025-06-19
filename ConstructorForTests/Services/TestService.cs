@@ -42,6 +42,22 @@ namespace ConstructorForTests.Services
 			return new SendTestDTO(test, listGetQuestions);
 		}
 
+		public async Task<TestForEditingDto> GetTestForEditing(Guid testId)
+		{
+			var test = await _testRepo.GetTestInfoById(testId);
+			if (test == null && test.IsActive == true)
+				return null;
+
+			var questions = await _testRepo.GetTestQuestion(testId)
+				.ToListAsync();
+
+			var listGetQuestions = new List<BaseQuestionDto>();
+
+			CreateListBaseQuestionDto(listGetQuestions, questions);
+
+			return new TestForEditingDto(test, listGetQuestions);
+		}
+
 		private static void CreateListBaseQuestionDto(List<BaseQuestionDto> listGetQuestions, List<Question> questions)
 		{
 			foreach (var question in questions)

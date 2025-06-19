@@ -234,7 +234,7 @@ namespace ConstructorForTests.Controllers
 		[HttpGet("GetTest/Redactor{testId}")]
 		public async Task<IActionResult> GetTestByIdForRedactor(Guid testId)
 		{
-			var test = await _testService.GetTest(testId, true);
+			var test = await _testService.GetTestForEditing(testId);
 			if (test == null)
 				return NotFound();
 
