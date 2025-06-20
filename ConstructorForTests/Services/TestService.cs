@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConstructorForTests.Services
 {
+	/// <summary>
+	/// Бизнесовая логика
+	/// </summary>
 	public class TestService : ITestService
 	{
 		private readonly ITestRepo _testRepo;

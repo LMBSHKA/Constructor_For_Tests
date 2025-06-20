@@ -165,7 +165,8 @@ namespace ConstructorForTests.Controllers
 		public async Task<IActionResult> GetStatistic([FromQuery] StatisticFilterDto statisticFilter, 
 			[FromQuery] int pageNumber = 1)
 		{
-			return Ok(await _testRepo.GetStatistic(statisticFilter, pageNumber));
+			var curatorId = HttpContext.Session.GetString("CuratorId");
+			return Ok(await _testRepo.GetStatistic(statisticFilter, pageNumber, curatorId));
 		}
 
 		/// <summary>

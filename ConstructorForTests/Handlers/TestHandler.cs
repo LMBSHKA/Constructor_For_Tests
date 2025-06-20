@@ -4,6 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConstructorForTests.Handlers
 {
+	/// <summary>
+	/// Логика для тестов
+	/// </summary>
+
+	// Рефакторинг начат, но возможно не успею доделать
+	//Переделываю под паттерн репозиторий и сервис
 	public class TestHandler : ITestHandler
 	{
 		public void CreateStatisticDto(StatisticFilterDto statisticFilter, List<StatisticDto> statistics,

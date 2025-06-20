@@ -5,6 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConstructorForTests.UserSolutionHandler
 {
+	/// <summary>
+	/// Содержится логика приложения, обработка ответов на тест от пользователя
+	/// </summary>
+	
+	// Да не красиво не чисто написано, но рефакторинг начат, но могу не успеть его доделать
+	//Переделываю под паттерн репозиторий и сервис
 	public class SolutionHandler : ISolutionHandler
 	{
 		public async Task<decimal> CheckMultipleAnswer(UserAnswersDto userAnswer, 

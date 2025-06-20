@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConstructorForTests.Repositories
 {
+	// Рефакторинг нужен, но я не успел доделать
 	public class TestRepo : ITestRepo
 	{
 		private readonly AppDbContext _context;
@@ -23,17 +24,18 @@ namespace ConstructorForTests.Repositories
 			_userRepo = userRepo;
 		}
 
-		public async Task<List<StatisticDto>> GetStatistic(StatisticFilterDto statisticFilter, int pageNumber)
+		//Из-за проблем пагинация пока что не работает
+		public async Task<List<StatisticDto>> GetStatistic(StatisticFilterDto statisticFilter, int pageNumber, string curatorId)
 		{
 			var statistics = new List<StatisticDto>();
-			var listTestResults = GetTestResWithFilter(statisticFilter);
+			var listTestResults = await GetTestResWithFilter(statisticFilter, new Guid(curatorId)).ToArrayAsync();
+			//var pagedItems = await SetPagination(pageNumber, listTestResults);
 
-			var pagedItems = await SetPagination(pageNumber, listTestResults);
-
-			foreach (var testResult in pagedItems)
+			foreach (var testResult in listTestResults)
 			{
 				var test = await _context.Tests
 					.FirstOrDefaultAsync(x =>
+					x.UserId == curatorId &&
 					x.Id == testResult.TestId &&
 					x.IsDelete == false &&
 					EF.Functions.Like(x.Title, $"%{statisticFilter.TestName}%"));
@@ -66,11 +68,11 @@ namespace ConstructorForTests.Repositories
 			return pagedItems;
 		}
 
-		private IQueryable<TestResult> GetTestResWithFilter(StatisticFilterDto statisticFilter)
+		private IQueryable<TestResult> GetTestResWithFilter(StatisticFilterDto statisticFilter, Guid curatorId)
 		{
 			var listTestResults = _context.TestResults
 				.Where(stat =>
-				EF.Functions.Like(stat.IsPassed.ToString(), $"%{statisticFilter.Result}%") &
+				EF.Functions.Like(stat.IsPassed.ToString(), $"%{(statisticFilter.Result == null ? "" : statisticFilter.Result)}%") &
 				EF.Functions.Like(stat.TotalScore.ToString(), $"%{(statisticFilter.Score == -1 ? "" : statisticFilter.Score)}%"));
 
 			return listTestResults;

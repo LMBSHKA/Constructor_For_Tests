@@ -7,6 +7,9 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace ConstructorForTests.Filters
 {
+	/// <summary>
+	/// Атрибут утсанавливает таймер на тест
+	/// </summary>
 	public class SetTimerAttribute : Attribute, IAsyncActionFilter
 	{
 		private readonly ITestRepo _testRepo;

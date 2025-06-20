@@ -4,6 +4,10 @@ using System.Globalization;
 
 namespace ConstructorForTests.Quartz
 {
+	/// <summary>
+	/// Отслеживание дедлайнов, работает в фоне. 
+	/// Каждый день в 00:00 открывает или закрывает тест
+	/// </summary>
 	public class CheckDeadlineJob : IJob
 	{
 		private readonly ITestRepo _testRepo;

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConstructorForTests.Repositories
 {
+	// Полностью нужен рефакторинг, к сожалению не успел даже притронуться
 	public class UserRepo : IUserRepo
 	{
 		private readonly AppDbContext _context;

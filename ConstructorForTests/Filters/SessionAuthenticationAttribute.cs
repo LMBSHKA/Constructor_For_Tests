@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ConstructorForTests.Filters
 {
+	/// <summary>
+	/// Аутентификация, использует сессии asp.net core
+	/// не записывает сессии в базу данных
+	/// <a href="https://metanit.com/sharp/aspnet6/8.3.php">узнать подробнее</a>  
+	/// </summary>
 	public class SessionAuthenticationAttribute : Attribute, IAsyncAuthorizationFilter
 	{
 		public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
