@@ -3,6 +3,7 @@ using ConstructorForTests.Database;
 using ConstructorForTests.Dtos;
 using ConstructorForTests.Handlers;
 using ConstructorForTests.Models;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConstructorForTests.Repositories
@@ -25,20 +26,22 @@ namespace ConstructorForTests.Repositories
 		}
 
 		//Из-за проблем пагинация пока что не работает
-		public async Task<List<StatisticDto>> GetStatistic(StatisticFilterDto statisticFilter, int pageNumber, string curatorId)
+		public async Task<IEnumerable<StatisticDto>> GetStatistic(StatisticFilterDto statisticFilter, int pageNumber, string curatorId)
 		{
 			var statistics = new List<StatisticDto>();
-			var listTestResults = await GetTestResWithFilter(statisticFilter, new Guid(curatorId)).ToArrayAsync();
-			//var pagedItems = await SetPagination(pageNumber, listTestResults);
+			var tests = await _context.Tests
+				.Where(x =>
+					x.UserId == curatorId &&
+					x.IsDelete == false &&
+					EF.Functions.Like(x.Title, $"%{statisticFilter.TestName}%"))
+				.ToArrayAsync();
 
+			var listTestResults = await GetTestResWithFilter(statisticFilter, tests).ToArrayAsync();
+			
 			foreach (var testResult in listTestResults)
 			{
-				var test = await _context.Tests
-					.FirstOrDefaultAsync(x =>
-					x.UserId == curatorId &&
-					x.Id == testResult.TestId &&
-					x.IsDelete == false &&
-					EF.Functions.Like(x.Title, $"%{statisticFilter.TestName}%"));
+				var test = tests
+					.FirstOrDefault(x => x.Id == testResult.TestId);
 
 				if (test != null)
 				{
@@ -53,25 +56,26 @@ namespace ConstructorForTests.Repositories
 					}
 				}
 			}
-
-			return statistics;
-		}
-
-		private async Task<TestResult[]> SetPagination(int pageNumber, IQueryable<TestResult> listTestResults)
-		{
-			var startIndex = (pageNumber - 1) * PageSize;
-			var pagedItems = await listTestResults
-				.Skip(startIndex)
-				.Take(PageSize)
-				.ToArrayAsync();
+			var pagedItems = SetPagination(pageNumber, statistics);
 
 			return pagedItems;
 		}
 
-		private IQueryable<TestResult> GetTestResWithFilter(StatisticFilterDto statisticFilter, Guid curatorId)
+		private IEnumerable<StatisticDto> SetPagination(int pageNumber, List<StatisticDto> listTestResults)
+		{
+			var startIndex = (pageNumber - 1) * PageSize;
+			var pagedItems = listTestResults
+				.Skip(startIndex)
+				.Take(PageSize);
+
+			return pagedItems;
+		}
+
+		private IQueryable<TestResult> GetTestResWithFilter(StatisticFilterDto statisticFilter, Test[] tests)
 		{
 			var listTestResults = _context.TestResults
 				.Where(stat =>
+				tests.Select(x => x.Id).Contains(stat.TestId) &&
 				EF.Functions.Like(stat.IsPassed.ToString(), $"%{(statisticFilter.Result == null ? "" : statisticFilter.Result)}%") &
 				EF.Functions.Like(stat.TotalScore.ToString(), $"%{(statisticFilter.Score == -1 ? "" : statisticFilter.Score)}%"));
 
