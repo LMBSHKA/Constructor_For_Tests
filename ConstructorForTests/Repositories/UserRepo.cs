@@ -21,6 +21,20 @@ namespace ConstructorForTests.Repositories
 			_context = context;
 		}
 
+		public IQueryable<User> GetAllUsers()
+		{
+			return _context.Users.AsQueryable();
+		}
+		public User? GetUserById(Guid userId)
+		{
+			var user = _context.Users
+				.FirstOrDefault(x => x.Id == userId);
+
+			if (user == null)
+				return null;
+
+			return user;
+		}
 		public async Task<decimal> CheckUserAnswers(UserSolutionDto userSolution, Guid testId, Guid userId)
 		{
 			decimal score = 0;

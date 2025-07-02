@@ -166,7 +166,7 @@ namespace ConstructorForTests.Controllers
 			[FromQuery] int pageNumber = 1)
 		{
 			var curatorId = HttpContext.Session.GetString("CuratorId");
-			return Ok(await _testRepo.GetStatistic(statisticFilter, pageNumber, curatorId));
+			return Ok(await _testService.GetStatistic(statisticFilter, pageNumber, curatorId));
 		}
 
 		/// <summary>

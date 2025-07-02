@@ -5,6 +5,8 @@ namespace ConstructorForTests.Services
 {
 	public interface ITestService
 	{
+		Task<IEnumerable<StatisticDto>> GetStatistic(StatisticFilterDto statisticFilter,
+			int pageNumber, string curatorId);
 		Task<SendTestDTO?> GetTest(Guid testId, bool isCurator);
 		Task<TestForEditingDto> GetTestForEditing(Guid testId);
 		string CalculateTimer(int timerInSeconds, string startTimer);

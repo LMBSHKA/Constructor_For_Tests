@@ -1,5 +1,4 @@
 ﻿using ConstructorForTests.Dtos;
-using ConstructorForTests.Handlers;
 using ConstructorForTests.Models;
 using ConstructorForTests.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +11,103 @@ namespace ConstructorForTests.Services
 	public class TestService : ITestService
 	{
 		private readonly ITestRepo _testRepo;
+		private readonly IUserRepo _userRepo;
+		private int PageSize { get; } = 20;
 
-		public TestService(ITestRepo testRepo)
+		public TestService(ITestRepo testRepo, IUserRepo userRepo)
 		{
+			_userRepo = userRepo;
 			_testRepo = testRepo;
+		}
+
+		public async Task<IEnumerable<StatisticDto>> GetStatistic(StatisticFilterDto statisticFilter,
+			int pageNumber, string curatorId)
+		{
+			var tests = await _testRepo.GetAllTests()
+				.Where(x =>
+					x.UserId == curatorId &&
+					EF.Functions.Like(x.Title, $"%{statisticFilter.TestName}%"))
+				.ToArrayAsync();
+
+			var arrayTestResults = await SetFilterToTestResult(statisticFilter, tests);
+			var statistics = await CreateListStatistic(statisticFilter, tests, arrayTestResults);
+			var pagedItems = SetPagination(pageNumber, statistics);
+
+			return pagedItems;
+		}
+
+		private async Task<List<StatisticDto>> CreateListStatistic(StatisticFilterDto statisticFilter,
+			Test[] tests, TestResult[] arrayTestResults)
+		{
+			var statistics = new List<StatisticDto>();
+			foreach (var testResult in arrayTestResults)
+			{
+				var test = tests
+					.FirstOrDefault(x => x.Id == testResult.TestId);
+
+				if (test != null)
+				{
+					var user = await SetFilterToUser(statisticFilter, testResult);
+					if (user != null)
+					{
+						CreateStatisticDto(statisticFilter, statistics, user, test, testResult);
+					}
+				}
+			}
+
+			return statistics;
+		}
+
+		private IEnumerable<StatisticDto> SetPagination(int pageNumber, List<StatisticDto> listTestResults)
+		{
+			var startIndex = (pageNumber - 1) * PageSize;
+			var pagedItems = listTestResults
+				.Skip(startIndex)
+				.Take(PageSize);
+
+			return pagedItems;
+		}
+
+		private void CreateStatisticDto(StatisticFilterDto statisticFilter, List<StatisticDto> statistics,
+			User user, Test test, TestResult testResult)
+		{
+			var fullName = string.Join(' ', [user.SecondName, user.FirstName, user.Patronymic]);
+
+			if (statisticFilter.FullName != null && statisticFilter.FullName.Equals(fullName) || statisticFilter.FullName == "")
+			{
+				var statistic = new StatisticDto(
+					string.Join(' ', [user.FirstName, user.SecondName, user.Patronymic]),
+					user.Email,
+					test.Title,
+					testResult.IsPassed,
+					testResult.TotalScore);
+
+				statistics.Add(statistic);
+			}
+		}
+
+		private async Task<User?> SetFilterToUser(StatisticFilterDto statisticFilter, TestResult testResult)
+		{
+			var userWithFilter = await _userRepo.GetAllUsers()
+				.FirstOrDefaultAsync(x =>
+				x.Id == testResult.UserId &&
+				EF.Functions.Like(x.Email, $"%{statisticFilter.Email}%"));
+
+			return userWithFilter;
+		}
+
+		private async Task<TestResult[]> SetFilterToTestResult(StatisticFilterDto statisticFilter, Test[] tests)
+		{
+			var arrayTestResults = await _testRepo.GetTestResult()
+			.Where(stat =>
+			tests.Select(x => x.Id).Contains(stat.TestId) &&
+			EF.Functions.Like(stat.IsPassed.ToString(),
+			$"%{(statisticFilter.Result == null ? "" : statisticFilter.Result)}%") &
+			EF.Functions.Like(stat.TotalScore.ToString(),
+			$"%{(statisticFilter.Score == -1 ? "" : statisticFilter.Score)}%"))
+			.ToArrayAsync();
+
+			return arrayTestResults;
 		}
 
 		public async Task<List<Test>> GetAllTests(string curatorId)

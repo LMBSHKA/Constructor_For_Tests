@@ -17,7 +17,8 @@ namespace ConstructorForTests.Repositories
 		private readonly IEmailSender _emailSender;
 		private int PageSize { get; } = 20;
 
-		public TestRepo(AppDbContext context, ITestHandler testHandler, IUserRepo userRepo, IEmailSender emailSender)
+		public TestRepo(AppDbContext context, ITestHandler testHandler, 
+			IUserRepo userRepo, IEmailSender emailSender)
 		{
 			_emailSender = emailSender;
 			_context = context;
@@ -25,61 +26,9 @@ namespace ConstructorForTests.Repositories
 			_userRepo = userRepo;
 		}
 
-		//Из-за проблем пагинация пока что не работает
-		public async Task<IEnumerable<StatisticDto>> GetStatistic(StatisticFilterDto statisticFilter, int pageNumber, string curatorId)
+		public IQueryable<TestResult> GetTestResult()
 		{
-			var statistics = new List<StatisticDto>();
-			var tests = await _context.Tests
-				.Where(x =>
-					x.UserId == curatorId &&
-					x.IsDelete == false &&
-					EF.Functions.Like(x.Title, $"%{statisticFilter.TestName}%"))
-				.ToArrayAsync();
-
-			var listTestResults = await GetTestResWithFilter(statisticFilter, tests).ToArrayAsync();
-			
-			foreach (var testResult in listTestResults)
-			{
-				var test = tests
-					.FirstOrDefault(x => x.Id == testResult.TestId);
-
-				if (test != null)
-				{
-					var user = await _context.Users
-						.FirstOrDefaultAsync(x =>
-						x.Id == testResult.UserId &&
-						EF.Functions.Like(x.Email, $"%{statisticFilter.Email}%"));
-
-					if (user != null)
-					{
-						_testHandler.CreateStatisticDto(statisticFilter, statistics, user, test, testResult);
-					}
-				}
-			}
-			var pagedItems = SetPagination(pageNumber, statistics);
-
-			return pagedItems;
-		}
-
-		private IEnumerable<StatisticDto> SetPagination(int pageNumber, List<StatisticDto> listTestResults)
-		{
-			var startIndex = (pageNumber - 1) * PageSize;
-			var pagedItems = listTestResults
-				.Skip(startIndex)
-				.Take(PageSize);
-
-			return pagedItems;
-		}
-
-		private IQueryable<TestResult> GetTestResWithFilter(StatisticFilterDto statisticFilter, Test[] tests)
-		{
-			var listTestResults = _context.TestResults
-				.Where(stat =>
-				tests.Select(x => x.Id).Contains(stat.TestId) &&
-				EF.Functions.Like(stat.IsPassed.ToString(), $"%{(statisticFilter.Result == null ? "" : statisticFilter.Result)}%") &
-				EF.Functions.Like(stat.TotalScore.ToString(), $"%{(statisticFilter.Score == -1 ? "" : statisticFilter.Score)}%"));
-
-			return listTestResults;
+			return _context.TestResults.AsQueryable();
 		}
 
 		public IQueryable<Test> GetAllTests()
